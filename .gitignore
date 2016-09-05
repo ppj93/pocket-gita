@@ -1,0 +1,8 @@
+# ignore modules directory
+node_modules
+
+# ignore temp files
+*~
+
+# ignore any downloaded libraries being used for offline development
+public/lib/**
