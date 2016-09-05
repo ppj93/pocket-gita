@@ -1,0 +1,23 @@
+{
+  "name": "pocket-gita",
+  "version": "1.0.0",
+  "description": "Website containing short spiritual audio clips",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ppj93/pocket-gita.git"
+  },
+  "author": "Pravin Joshi, Madhav Agrawal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ppj93/pocket-gita/issues"
+  },
+  "homepage": "https://github.com/ppj93/pocket-gita#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "underscore": "^1.8.3"
+  }
+}
