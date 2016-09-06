@@ -1,18 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>  
+        <base href="/">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         
         <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" crossorigin="anonymous">
 
         <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-theme.min.css" crossorigin="anonymous">
+        <script src="lib/jquery.js"></script>
         <script src="lib/bootstrap/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+        
+        <script src="lib/angular.min.js"></script>
+        <script src="lib/angular-ui-router.js"></script>
+
+        <script src="scripts/common/app.js"></script>
+        <script src="scripts/common/routes.js"></script>
     </head>
     
-    <body>
+    
+    <body ng-app="PocketGita">
         <div class="container-fluid">
-            <h1>hello world</h1>
-            <div ng-view></div>
+            <p>Hello world</p>
+
+             <ui-view></ui-view>      
         </div>
-</body>
+    </body>
 </html>

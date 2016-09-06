@@ -1,5 +1,5 @@
 var express = require('express'),
-    config = require('./dashboardConfig'),
+    config = require('./config'),
     fs = require('fs'),
     handlebars = require('express-handlebars'),
     app = express();
@@ -13,6 +13,10 @@ app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/public/views')
 app.get('/', function (req, res) {
     res.render('index');
+});
+
+app.get('/albumListPartial', function (req, res) {
+    res.render('albumListPartial');
 });
 
 /* Support for autoViews */

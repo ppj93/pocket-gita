@@ -2,7 +2,11 @@
 
 angular.module('PocketGita.Constants', []);
 
-angular.module('PocketGita.Config', []);
+angular.module('PocketGita.Config', ['ui.router']);
+
+angular.module('PocketGita.Directives', [
+    'PocketGita.Constants'
+]);
 
 angular.module('PocketGita.Services', [
     'PocketGita.Constants', 'PocketGita.Config'
@@ -20,4 +24,4 @@ angular.module('PocketGita.Controllers', [
     'PocketGita.Config'
 ]);
 
-angular.module('PocketGita', ['PocketGita.Controllers', 'PocketGita.Directives']);
+angular.module('PocketGita', ['PocketGita.Config']);
