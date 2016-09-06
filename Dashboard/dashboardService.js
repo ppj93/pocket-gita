@@ -19,6 +19,10 @@ app.get('/albumListPartial', function (req, res) {
     res.render('albumListPartial');
 });
 
+app.get('/trackListPartial', function (req, res) {
+    res.render('trackListPartial');
+});
+
 /* Support for autoViews */
 var autoViews = {};
 
