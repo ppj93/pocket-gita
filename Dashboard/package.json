@@ -2,7 +2,7 @@
   "name": "pocket-gita",
   "version": "1.0.0",
   "description": "Website containing short spiritual audio clips",
-  "main": "dashboardService.js",
+  "main": "service.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

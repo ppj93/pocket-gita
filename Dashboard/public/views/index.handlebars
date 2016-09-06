@@ -21,19 +21,22 @@
 
     <body ng-app="PocketGita">
         <div class="container-fluid">
-            <nav class="navbar navbar-default">
-                <div class="container-fluid">
-                   <div class="navbar-header">
-                        <a class="navbar-brand" href="#">Pocket Gita - Admin</a>
-                    </div>
+            <nav class="navbar navbar-default" style="margin-bottom: 0px">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Pocket Gita - Admin</a>
+                </div>
 
-                    <div class="nav navbar-nav">
-                        <li class="active"><a ui-sref="albumViewState">Album View</a></li>
-                        <li><a ui-sref="trackViewState">Track View</a></li>
-                    </div>
+                <div class="nav navbar-nav">
+                    <li class="active"><a ui-sref="albumViewState">Album View</a></li>
+                    <li><a ui-sref="trackViewState">Track View</a></li>
                 </div>
             </nav>
-             <ui-view></ui-view>      
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <ui-view></ui-view>
+                </div>
+            </div>
+            </div>      
         </div>
     </body>
 </html>
