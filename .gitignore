@@ -1,8 +1,11 @@
 # ignore modules directory
-node_modules
+Dashboard/node_modules
+Website/node_modules
 
 # ignore temp files
 *~
 
 # ignore any downloaded libraries being used for offline development
-public/lib/**
+Dashboard/public/lib
+
+.vscode
