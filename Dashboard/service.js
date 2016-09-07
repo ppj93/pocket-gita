@@ -1,12 +1,18 @@
 var express = require('express'),
     config = require('./config'),
     fs = require('fs'),
+    app = express(),
     handlebars = require('express-handlebars'),
-    app = express();
+    albumCtrl = require('./controllers/albumCtrl'),
+    bodyParser = require('body-parser');
+    
 
 app.set('port', config.appConfig.port);
 
 app.use(express.static(__dirname + '/public'));
+
+/* Foll is required to access POST data in a request */
+app.use(bodyParser.json());
 
 app.engine('handlebars', handlebars());
 app.set('view engine', 'handlebars');
@@ -15,13 +21,11 @@ app.get('/', function (req, res) {
     res.render('index');
 });
 
-app.get('/albumListPartial', function (req, res) {
-    res.render('albumListPartial');
-});
-
 app.get('/trackListPartial', function (req, res) {
     res.render('trackListPartial');
 });
+
+albumCtrl.registerRoutes(app);
 
 /* Support for autoViews */
 var autoViews = {};
