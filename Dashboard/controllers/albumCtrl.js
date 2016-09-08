@@ -4,6 +4,7 @@ var mongoUtil = require('../common/mongoUtil');
 var mongoose = require('mongoose');
 var albumModel = mongoose.model('album');
 var requestValidations = require('./requestValidations');
+var uuidGen = require('node-uuid');
 
 var _ = require('underscore');
 
@@ -11,7 +12,7 @@ module.exports = {
     registerRoutes: function (app) {
         app.get('/albumListPartial', this.getAlbumListPartial);
         app.post('/getAlbumList', this.getAlbumList);
-        app.post('addAlbum', this.addAlbum);
+        app.post('/addAlbum', this.addAlbum);
     },
 
     getAlbumListPartial: function (req, res) {
@@ -36,6 +37,7 @@ module.exports = {
             res.json({
                 result: operationResults.problemConnectingToDb
             });
+            return;
         }, function (db) {             
             albumModel.find({}, function (err, albums) {
                 var albumListViewModel = _.map(albums, function (album) { 
@@ -56,32 +58,39 @@ module.exports = {
     addAlbum: function (req, res) {
         var reqBody = req.body;
         
-        if (!requestValidations.isAddAlbumRequestValid(req)) {
+        if (!requestValidations.isAddAlbumRequestValid(reqBody)) {
             res.json({
                 result: operationResults.invalidRequest
             });
+            return;
         }
         
-        var pageSize = reqBody.pageSize || appConfig.pageSize;
-        var pageNumber = reqBody.pageNumber || 1;
-
+        var newAlbum = reqBody.album;
+        
         mongoUtil.connectToDb(function (error) { 
             res.json({
                 result: operationResults.problemConnectingToDb
             });
-        }, function (db) {             
-            albumModel.find({}, function (err, albums) {
-                var albumListViewModel = _.map(albums, function (album) { 
-                    return {
-                        id: album.id,
-                        name: album.name,
-                        thumbnailUrl: album.thumbnailUrl
-                    };
-                });
+            return;
+        }, function (db) {  
+            var newAlbumModel = new albumModel({
+                id: uuidGen.v1(),
+                name: newAlbum.name,
+                thumbnailUrl: newAlbum.thumbnailUrl,
+                trackIds: newAlbum.trackIds
+            });
+            newAlbumModel.save(function (error, succes) {
+                if (error) {
+                    res.json({
+                        result: operationResults.dbOperationFailed
+                    }); 
+                    return;
+                }
+
                 res.json({
-                    result: operationResults.success,
-                    albumList: albumListViewModel
+                    result: operationResults.success
                 });
+                return;
             });
         });
     }

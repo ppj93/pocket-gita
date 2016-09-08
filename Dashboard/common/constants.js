@@ -13,5 +13,9 @@ exports.operationResults = {
     problemConnectingToDb: {
         code: 'ER_3',
         message: 'Problem connecting to DB'
+    },
+    dbOperationFailed: {
+        code: 'ER_4',
+        message: 'DB Operation failed'
     }
 };

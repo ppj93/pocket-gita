@@ -23,6 +23,7 @@
     "express3-handlebars": "^0.5.2",
     "mongodb": "^2.2.9",
     "mongoose": "^4.6.0",
+    "node-uuid": "^1.4.7",
     "normalize.css": "^4.2.0",
     "underscore": "^1.8.3"
   }
