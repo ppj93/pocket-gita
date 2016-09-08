@@ -6,7 +6,7 @@
 angular.module('controllers').controller('albumCtrl', ['albumService', function (albumService) {
     var that = this;
     albumService.getAlbums().then(function (response) { 
-        that.albumList = response.albumList;
+        that.albums = response.albums;
     }, function (error) { 
         console.log(error);
     });

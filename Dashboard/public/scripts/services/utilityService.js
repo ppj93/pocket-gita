@@ -10,6 +10,7 @@
                 message: "Network error occurred."
             };
         };
-        
+
+        return service;
     }]);
 })();

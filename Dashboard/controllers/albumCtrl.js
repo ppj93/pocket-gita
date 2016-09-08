@@ -11,7 +11,7 @@ var _ = require('underscore');
 module.exports = {
     registerRoutes: function (app) {
         app.get('/albumListPartial', this.getAlbumListPartial);
-        app.post('/getAlbumList', this.getAlbumList);
+        app.post('/getAlbums', this.getAlbums);
         app.post('/addAlbum', this.addAlbum);
     },
 
@@ -19,7 +19,7 @@ module.exports = {
         res.render('albumListPartial');
     },
 
-    getAlbumList: function (req, res) {
+    getAlbums: function (req, res) {
         var reqBody = req.body;
 
         
@@ -49,7 +49,7 @@ module.exports = {
                 });
                 res.json({
                     result: operationResults.success,
-                    albumList: albumListViewModel
+                    albums: albumListViewModel
                 });
             });
         });

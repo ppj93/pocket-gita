@@ -1,5 +1,5 @@
 (function () {
-    module('config')
+    angular.module('config')
         .constant('serviceUrls', {
             getAlbums: "/getAlbums",
             addAlbum: "/addAlbum",

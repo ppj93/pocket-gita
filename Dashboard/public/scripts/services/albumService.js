@@ -4,20 +4,23 @@
         var service = {};
 
         
-        service.getAlbumList = function () {
+        service.getAlbums = function () {
             var request = {
-                requestBase: uuidService.c1()
+                requestBase: {
+                    requestId: uuidService.v1()
+                }
             };
-            return $http.post(serviceUrls.getAlbumList, request).then(function (response) {
+            return $http.post(serviceUrls.getAlbums, request).then(function (response) {
+                var data = response.data;
                 /**
                  * Always use === and !== for comparison. Check google for reason.!
                  */
-                if (response.result.code !== 0) {
-                    return $q.reject(response.result);
+                if (data.result.code !== 0) {
+                    return $q.reject(data.result);
                 }
 
-                return response.albumList;
-                
+                return data.albums;
+
             }, utilityService.handleNetworkError);
         };
             
