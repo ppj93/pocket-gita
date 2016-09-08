@@ -1,4 +1,4 @@
-angular.module('PocketGita.Config').config(function ($stateProvider, $locationProvider) {    
+angular.module('config').config(function ($stateProvider, $locationProvider) {    
     $stateProvider
         .state('homeState', {
             url: '/',

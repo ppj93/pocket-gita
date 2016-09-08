@@ -1,27 +1,27 @@
 /* Before declaring a module, declare its dependency */
 
-angular.module('PocketGita.Constants', []);
+angular.module('constants', []);
 
-angular.module('PocketGita.Config', ['ui.router']);
+angular.module('config', ['ui.router']);
 
-angular.module('PocketGita.Directives', [
-    'PocketGita.Constants'
+angular.module('directives', [
+    'constants'
 ]);
 
-angular.module('PocketGita.Services', [
-    'PocketGita.Constants', 'PocketGita.Config'
+angular.module('services', [
+    'constants', 'config'
 ]);
 
-angular.module('PocketGita.Filters', [
-    'PocketGita.Constants',
-    'PocketGita.Config'
+angular.module('filters', [
+    'constants',
+    'config'
 ]);
 
-angular.module('PocketGita.Controllers', [
-    'PocketGita.Filters',
-    'PocketGita.Services',
-    'PocketGita.Constants',
-    'PocketGita.Config'
+angular.module('controllers', [
+    'filters',
+    'services',
+    'constants',
+    'config'
 ]);
 
-angular.module('PocketGita', ['PocketGita.Config']);
+angular.module('pocketGita', ['controllers', 'config']);
