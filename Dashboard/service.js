@@ -3,7 +3,6 @@ var express = require('express'),
     fs = require('fs'),
     app = express(),
     handlebars = require('express-handlebars'),
-    albumCtrl = require('./controllers/albumCtrl'),
     bodyParser = require('body-parser');
     
 
@@ -25,10 +24,16 @@ app.get('/trackListPartial', function (req, res) {
     res.render('trackListPartial');
 });
 
-albumCtrl.registerRoutes(app);
-
-/* Support for autoViews */
 var autoViews = {};
+
+/** TODO: move this to common folder */
+var schemaRegistration = require('./dbSetupScripts/schemaRegistration');
+
+schemaRegistration.registerModules();
+
+var albumCtrl = require('./controllers/albumCtrl');
+
+albumCtrl.registerRoutes(app);
 
 app.use(function(req,res,next){
     var path = req.path.toLowerCase();  

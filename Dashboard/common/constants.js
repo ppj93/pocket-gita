@@ -1,4 +1,7 @@
-exports.responseCodeMessages = {
+exports.operationResults = {
+    success: {
+        code: 0
+    },
     invalidRequest: {
         code: 'ER_1',
         message: 'Invalid request sent'
@@ -6,5 +9,9 @@ exports.responseCodeMessages = {
     internalError: {
         code: 'ER_2',
         message: 'Internal error occurred'
+    },
+    problemConnectingToDb: {
+        code: 'ER_3',
+        message: 'Problem connecting to DB'
     }
 };
