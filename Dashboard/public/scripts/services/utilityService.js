@@ -11,6 +11,12 @@
             };
         };
 
+        service.constructMessageObject = function (type, text) {
+            return {
+                type: type,
+                text: text
+            };
+        };
         return service;
     }]);
 })();

@@ -1,3 +1,5 @@
+'use strict';
+ 
 var operationResults = require('../common/constants').operationResults;
 var appConfig = require('../config').appConfig;
 var mongoUtil = require('../common/mongoUtil');
@@ -11,6 +13,7 @@ var _ = require('underscore');
 module.exports = {
     registerRoutes: function (app) {
         app.get('/albumListPartial', this.getAlbumListPartial);
+        app.get('/addAlbumPartial', this.getAddAlbumPartial);
         app.post('/getAlbums', this.getAlbums);
         app.post('/addAlbum', this.addAlbum);
     },
@@ -19,6 +22,10 @@ module.exports = {
         res.render('albumListPartial');
     },
 
+    getAddAlbumPartial: function (req, res) {
+        res.render('addAlbumPartial');
+    },
+    
     getAlbums: function (req, res) {
         var reqBody = req.body;
 

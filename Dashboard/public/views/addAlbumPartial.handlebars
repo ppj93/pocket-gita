@@ -1,0 +1,30 @@
+<div ng-controller="albumCtrl as albCtrl">
+
+    <div action-status-message controller="albCtrl" message="message"></div>
+     <form class="form-horizontal">
+        <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">Name*: </label>
+            <div class="col-sm-10">
+                <input id="name" type="text" class="form-control" ng-model="album.name">
+            </div>
+        </div>
+
+        
+        <div class="form-group">
+            <label for="thumbnailUrl" class="col-sm-2 control-label">Thumbnail URL: </label>
+            <div class="col-sm-10 input-group" style="padding-right: 1.15%">
+                <input style="margin-left: 15px; width: 99%" id="thumbnailUrl" type="text" class="form-control" ng-model="album.thumbnailUrl">
+                <div class="input-group-addon">Use existing</div>
+                <div class="input-group-addon"><span class="glyphicon glyphicon-plus"></span>Add New</div>
+            </div>
+            
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button class="btn btn-primary" ng-click="albCtrl.addAlbum(albCtrl.album)">Submit</button>
+                <button class="btn btn-danger" ng-click="albCtrl.cancelAddNewAlbum()">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

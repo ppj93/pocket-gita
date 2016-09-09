@@ -11,6 +11,10 @@ angular.module('config').config(function ($stateProvider, $locationProvider) {
         .state('trackViewState', {
             url: '/tracks',
             templateUrl: 'trackListPartial'
+        })
+        .state('addAlbumState', {
+            url: '/addAlbum',
+            templateUrl: 'addAlbumPartial'
         });
 
     /* If you dont put foll config, you have to attach # to bypass browser
