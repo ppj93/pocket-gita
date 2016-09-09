@@ -21,10 +21,15 @@
 
         this.addAlbum = function (album) {
             albumService.addAlbum(album).then(function (response) { 
-                
+                that.message = utilityService.constructMessageObject(constants.messageTypes.success, "Added successfully");
             }, function (error) { 
                 that.message = utilityService.constructMessageObject(constants.messageTypes.error, error.message);
             });  
+        };
+            
+        this.setupAddNewAlbum = function () {
+            that.updateAlbumInProgress = true;
+            that.album = {};
         };
     }]);
 })();
