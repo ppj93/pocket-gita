@@ -1,17 +1,18 @@
 (function () {
     'use strict';
-    angular.module('config').config(function ($stateProvider, $locationProvider) {    
+    angular.module('config').config(function ($stateProvider, $locationProvider, $urlRouterProvider) {    
         $stateProvider
-            .state('homeState', {
-                url: '/',
-                templateUrl: 'albumListPartial'
-            })
-            .state('albumListState', {
+            .state('manageAlbumsState', {
                 url: '/albums',
+                templateUrl: 'manageAlbumsPartial',
+                abstract: true
+            })
+            .state('manageAlbumsState.list', {
+                url: '',
                 templateUrl: 'albumListPartial'
             })
             .state('albumDetailsState', {
-                url: '/albums/:id',
+                url: '/albums/{id:[0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12}}',
                 templateUrl: 'albumDetailsPartial'
             })
             .state('trackListState', {
@@ -23,5 +24,7 @@
         This has to be done so that website works in non html5 browsers. */
 
         $locationProvider.html5Mode(true);
+        //$urlRouterProvider.when('/albums', '/albums/list');
+        $urlRouterProvider.otherwise('/albums');
     });
 })();
