@@ -1,4 +1,6 @@
 (function () { 
+    'use strict';
+
     angular.module('directives').directive(['$watch', function ($watch) {
         return function (scope, element, attrs) {
             var controllerName = attrs['controller'];

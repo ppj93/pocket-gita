@@ -4,6 +4,8 @@
  */
  
 (function () {
+    'use strict';
+    
     angular.module('controllers').controller('albumCtrl', ['utilityService', 'constants', 'albumService',
         '$state', function (utilityService, constants, albumService, $state) {
         var that = this;

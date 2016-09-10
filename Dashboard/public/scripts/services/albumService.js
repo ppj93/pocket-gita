@@ -1,4 +1,6 @@
 (function () { 
+    'use strict';
+
     angular.module('services').factory('albumService', ['$q', '$http', 'uuidService', 'serviceUrls', 'utilityService', 
         function ($q, $http, uuidService, serviceUrls, utilityService) {
         var service = {};

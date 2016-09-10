@@ -1,4 +1,6 @@
 (function () {
+    'use strict';
+
     angular.module('services').factory('utilityService', ['$q', function ($q) { 
         var service = {};
 

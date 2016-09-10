@@ -1,4 +1,6 @@
 (function () { 
+    'use strict';
+
     angular.module('directives').directive('actionStatusMessage', ['$watch', 'constants',
         function ($watch, constants) {
             return {

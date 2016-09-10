@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express'),
     config = require('./config'),
     fs = require('fs'),
@@ -31,7 +33,7 @@ schemaRegistration.registerModules();
 
 var albumCtrl = require('./controllers/albumCtrl');
 
-albumCtrl.registerRoutes(app);
+//albumCtrl.registerRoutes(app);
 
 var autoViews = {};
 app.use(function(req,res,next){
@@ -48,10 +50,12 @@ app.use(function(req,res,next){
     _.each(config.appConfig.viewDirectories, function (dirName) {
 
         var files = fs.readdirSync(__dirname + '/public/views/' + dirName);
-        
+
+        // TODO: change below to for loop -- to break on found. 
         _.each(files, function (fileName) {
             if (fileName.toLowerCase() === path.replace(/^\//, '').toLowerCase() + '.handlebars') {
-                autoViews[path] = dirName + path.replace(/^\//, '');
+                
+                autoViews[path] = dirName.replace(/^\//, '') + '/' + fileName;
                 found = true;
                 return res.render(autoViews[path]);
             } else {

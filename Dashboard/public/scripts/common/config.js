@@ -1,4 +1,6 @@
 (function () {
+    'use strict';
+    
     angular.module('config')
         .constant('serviceUrls', {
             getAlbums: "/getAlbums",

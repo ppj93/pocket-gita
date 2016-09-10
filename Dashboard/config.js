@@ -5,6 +5,6 @@ exports.appConfig = {
      * viewDirectories are listed w.r.t home_directory/public/views directory  
      */
     viewDirectories: [
-        'albumPartials', 'trackPartials'
+        'partials'
     ]
 };
