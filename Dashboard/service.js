@@ -33,7 +33,7 @@ schemaRegistration.registerModules();
 
 var albumCtrl = require('./controllers/albumCtrl');
 
-//albumCtrl.registerRoutes(app);
+albumCtrl.registerRoutes(app);
 
 var autoViews = {};
 app.use(function(req,res,next){

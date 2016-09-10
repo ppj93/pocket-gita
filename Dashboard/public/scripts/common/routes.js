@@ -11,8 +11,11 @@
                 url: '',
                 templateUrl: 'albumListPartial'
             })
-            .state('albumDetailsState', {
-                url: '/albums/{id:[0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12}}',
+            .state('manageAlbumsState.albumDetails', {
+                /**
+                 * foll reg-exp is for a GUID - each album has a uuid
+                 */
+                url: '/{id:[0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12}}',
                 templateUrl: 'albumDetailsPartial'
             })
             .state('trackListState', {

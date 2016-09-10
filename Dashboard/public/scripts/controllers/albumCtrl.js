@@ -18,7 +18,7 @@
         */
         this.cancelAddNewAlbum = function () {
             delete that.album;
-            $state.go('homeState');
+            $state.go('manageAlbumsState.list');
         };
 
         this.addAlbum = function (album) {
@@ -35,7 +35,7 @@
                 id: uuidService.v1()
             };
             //$state.go('^');
-            $state.go('albumDetailsState', {id: that.album.id});
+            $state.go('manageAlbumsState.albumDetails', {id: that.album.id});
         };
     }]);
 })();
