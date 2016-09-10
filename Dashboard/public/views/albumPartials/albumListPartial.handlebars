@@ -1,0 +1,13 @@
+<div>
+    <div ng-show="!albCtrl.updateAlbumInProgress">
+        <div>
+            <button type="button" class="btn btn-primary" ng-click="albCtrl.setupAddNewAlbum()">Add New Album</button>
+        </div> 
+        <div n-items-in-row n="3" controller="albCtrl" items="albums" 
+        row-template="/albumListRowPartial">
+            
+        </div>
+        [{albCtrl.albums ? albCtrl.albums.length : "ad"}]
+        <h3>hello world</h3>
+    </div>        
+</div>

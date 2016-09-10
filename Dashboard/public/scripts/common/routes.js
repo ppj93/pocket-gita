@@ -4,11 +4,15 @@ angular.module('config').config(function ($stateProvider, $locationProvider) {
             url: '/',
             templateUrl: 'manageAlbumsPartial'
         })
-        .state('albumViewState', {
+        .state('albumListState', {
             url: '/albums',
-            templateUrl: 'manageAlbumsPartial'
+            templateUrl: 'albumListPartial'
         })
-        .state('trackViewState', {
+        .state('albumDetailsState', {
+            url: '/albums/:id',
+            templateUrl: 'albumDetailsPartial'
+        })
+        .state('trackListState', {
             url: '/tracks',
             templateUrl: 'trackListPartial'
         });

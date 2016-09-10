@@ -12,20 +12,25 @@ var _ = require('underscore');
 
 module.exports = {
     registerRoutes: function (app) {
-        app.get('/manageAlbumsPartial', this.getManageAlbumsPartial);
+        app.get('/albumListPartial', this.getAlbumListPartial);
+        app.get('/albumListPartial', this.getAlbumListPartial);
         app.get('/addAlbumPartial', this.getAddAlbumPartial);
         app.post('/getAlbums', this.getAlbums);
         app.post('/addAlbum', this.addAlbum);
     },
 
-    getManageAlbumsPartial: function (req, res) {
-        res.render('manageAlbumsPartial');
+    getAlbumListPartial: function (req, res) {
+        res.render('albumListPartial');
     },
 
     getAddAlbumPartial: function (req, res) {
         res.render('addAlbumPartial');
     },
 
+    getAlbumDetailsPartial: function (req, res) {
+        res.render('albumDetailsPartial');
+    },
+    
     getAlbums: function (req, res) {
         var reqBody = req.body;
 
