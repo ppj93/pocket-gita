@@ -23,11 +23,7 @@ app.get('/', function (req, res) {
     res.render('index');
 });
 
-app.get('/trackListPartial', function (req, res) {
-    res.render('trackListPartial');
-});
-/** TODO: move this to common folder */
-var schemaRegistration = require('./dbSetupScripts/schemaRegistration');
+var schemaRegistration = require('./common/schemaRegistration');
 
 schemaRegistration.registerModules();
 
@@ -59,6 +55,7 @@ app.use(function(req,res,next){
                 found = true;
                 return res.render(autoViews[path]);
             } else {
+                //TODO: remove else when dev fairly stable
                 console.log(__dirname + '/public/views/' + dirName + path + '.handlebars');
             }
         });
@@ -70,8 +67,12 @@ app.use(function(req,res,next){
     }
 });
 
+exports.app = app;
+
+/*
 app.listen(config.appConfig.port, function () {
     console.log("Dashboard listening on port: " +
         config.appConfig.port
     );
 });
+*/

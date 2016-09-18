@@ -1,6 +1,5 @@
 # ignore modules directory
-Dashboard/node_modules
-Website/node_modules
+node_modules
 
 # ignore temp files
 *~
