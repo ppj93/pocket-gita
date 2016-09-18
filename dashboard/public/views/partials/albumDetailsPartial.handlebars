@@ -1,18 +1,18 @@
 <!--<div action-status-message="adfd" controller="albCtrl" message="message"></div>-->
 
-<form class="form-horizontal">
+<form name="modifyAlbumForm" class="form-horizontal">
     <div class="form-group">
-        <label for="name" class="col-sm-2 control-label">Name***: </label>
+        <label for="name" class="col-sm-2 control-label">Name*: </label>
         <div class="col-sm-10">
-            <input id="name" type="text" class="form-control" ng-model="albCtrl.album.name">
+            <input id="name" type="text" class="form-control" ng-model="albCtrl.album.name" required>
         </div>
     </div>
 
     <!--TODO: Add a call to name existing or not service & update status accordingly. Should disable submit button while request in progress-->
     <div class="form-group">
-        <label for="name" class="col-sm-2 control-label">Name in url (must be english)***: </label>
+        <label for="name" class="col-sm-2 control-label">Name in url (must be english)*: </label>
         <div class="col-sm-10">
-            <input id="name" type="text" class="form-control" ng-model="albCtrl.album.nameInUrl">
+            <input id="name" type="text" class="form-control" ng-model="albCtrl.album.nameInUrl" required>
             <span>Ex. दुर्लभ मानव जीवन (Rare human life) can have "Name in url" as rareHumanLife.</span>
             <span>start with small letter, capitalize each word's first letter without spaces</span>
         </div>
@@ -36,7 +36,7 @@
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <button class="btn btn-primary" ng-click="albCtrl.addAlbum(albCtrl.album)">Submit</button>
+            <button class="btn btn-primary" ng-disabled="modifyAlbumForm.$invalid" ng-click="albCtrl.addAlbum(albCtrl.album)">Submit</button>
             <button class="btn btn-danger" ng-click="albCtrl.cancelAddNewAlbum()">Cancel</button>
         </div>
     </div>
