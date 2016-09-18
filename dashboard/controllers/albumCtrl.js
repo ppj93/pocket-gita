@@ -1,8 +1,8 @@
 'use strict';
  
-var operationResults = require('../common/constants').operationResults;
+var operationResults = require('../../common/constants').operationResults;
 var appConfig = require('../config').appConfig;
-var mongoUtil = require('../common/mongoUtil');
+var mongoUtil = require('../../common/mongoUtil');
 var mongoose = require('mongoose');
 var albumModel = mongoose.model('album');
 var requestValidations = require('./requestValidations');
@@ -41,6 +41,7 @@ module.exports = {
             return;
         }, function (db) {             
             albumModel.find({}, function (err, albums) {
+                /**TODO: check error & return here */
                 var albumListViewModel = _.map(albums, function (album) { 
                     return {
                         id: album.id,
@@ -74,24 +75,40 @@ module.exports = {
             });
             return;
         }, function (db) {  
-            var newAlbumModel = new albumModel({
-                id: uuidGen.v1(),
-                name: newAlbum.name,
-                thumbnailUrl: newAlbum.thumbnailUrl,
-                trackIds: newAlbum.trackIds
-            });
-            newAlbumModel.save(function (error, succes) {
-                if (error) {
+            albumModel.find({ name: newAlbum.name }, function (err, albums) {
+                if (err) {
                     res.json({
                         result: operationResults.dbOperationFailed
-                    }); 
-                    return;
+                    });
                 }
+                else if(albums.length > 0) {
+                    res.json({
+                        result: operationResults.albumOps.albumBeingAddedExists
+                    });
+                }
+                else {
+                    var newAlbumModel = new albumModel({
+                        id: newAlbum.id,
+                        name: newAlbum.name,
+                        thumbnailUrl: newAlbum.thumbnailUrl,
+                        trackIds: newAlbum.trackIds,
+                        description: newAlbum.description,
+                        nameInUrl: newAlbum.nameInUrl
+                    });
+                    newAlbumModel.save(function (error) {
+                        if (error) {
+                            res.json({
+                                result: operationResults.dbOperationFailed
+                            }); 
+                            return;
+                        }
 
-                res.json({
-                    result: operationResults.success
-                });
-                return;
+                        res.json({
+                            result: operationResults.success
+                        });
+                        return;
+                    });
+                }
             });
         });
     }

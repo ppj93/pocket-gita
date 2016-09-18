@@ -23,10 +23,6 @@ app.get('/', function (req, res) {
     res.render('index');
 });
 
-var schemaRegistration = require('./common/schemaRegistration');
-
-schemaRegistration.registerModules();
-
 var albumCtrl = require('./controllers/albumCtrl');
 
 albumCtrl.registerRoutes(app);
@@ -68,11 +64,3 @@ app.use(function(req,res,next){
 });
 
 exports.app = app;
-
-/*
-app.listen(config.appConfig.port, function () {
-    console.log("Dashboard listening on port: " +
-        config.appConfig.port
-    );
-});
-*/

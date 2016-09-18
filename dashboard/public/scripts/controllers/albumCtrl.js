@@ -24,6 +24,9 @@
         this.addAlbum = function (album) {
             albumService.addAlbum(album).then(function (response) { 
                 that.message = utilityService.constructMessageObject(constants.messageTypes.success, "Added successfully");
+                /** Delete album variable used to store the temporary album object */
+                delete that.album;
+                $state.go('manageAlbumsState.list');
             }, function (error) { 
                 that.message = utilityService.constructMessageObject(constants.messageTypes.error, error.message);
             });  

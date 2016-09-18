@@ -7,7 +7,9 @@ var albumSchemaObj = {
     id: String,
     name: String,
     thumbnailUrl: String,
-    trackIds: [String]
+    trackIds: [String],
+    nameInUrl: String,
+    description: String
 };
 
 

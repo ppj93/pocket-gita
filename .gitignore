@@ -5,6 +5,7 @@ node_modules
 *~
 
 # ignore any downloaded libraries being used for offline development
-Dashboard/public/lib
+dashboard/public/lib
+website/public/lib
 
 .vscode
