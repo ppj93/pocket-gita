@@ -19,9 +19,13 @@ exports.operationResults = {
         message: 'DB Operation failed'
     },
     albumOps: {
-        albumBeingAddedExists: {
+        addAlbumNameExists: {
             code: 'ER_5',
-            message: 'Album being added already exists'
+            message: 'Album name already exists'
+        },
+        addAlbumNameInUrlExists: {
+            code: 'ER_6',
+            message: 'Name in url already exists'
         }
     }
 };

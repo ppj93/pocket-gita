@@ -14,5 +14,5 @@ var albumSchemaObj = {
 
 
 exports.registerModules = function () {
-    mongoose.model('album', mongoose.Schema(albumSchemaObj));    
+    mongoose.model('album', mongoose.Schema(albumSchemaObj, {collection: 'album'}));    
 };
