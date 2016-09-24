@@ -9,12 +9,18 @@
     angular.module('controllers').controller('albumCtrl', ['utilityService', 'constants', 'albumService',
         '$state', 'uuidService', function (utilityService, constants, albumService, $state, uuidService) {
         var that = this;
-        albumService.getAlbums().then(function (albums) { 
-            that.albums = albums;
-            console.log(that.albums);
-        }, function (error) { 
-            console.log(error);
-        });
+
+        this.init = function () { 
+            that.getAlbums();
+        };
+            
+        this.getAlbums = function () { 
+            albumService.getAlbums().then(function (albums) { 
+                that.albums = albums;
+            }, function (error) { 
+                that.message = utilityService.constructMessageObject(constants.messageTypes.error, error.message);
+            });
+        };
         
         this.cancelAddNewAlbum = function () {
             delete that.album;
@@ -37,8 +43,11 @@
             that.album = {
                 id: uuidService.v1()
             };
-            //$state.go('^');
-            $state.go('manageAlbumsState.albumDetails', {id: that.album.id});
+
+            $state.go('manageAlbumsState.albumDetails', { id: that.album.id });
         };
+            
+        /** Start execution here */
+        this.init();
     }]);
 })();
