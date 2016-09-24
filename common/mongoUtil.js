@@ -3,18 +3,22 @@ var mongoose = require('mongoose');
 var db = undefined;
 
 module.exports = {
-    connectToDb: function (errorCb, successCb) {
+    connectToDb: function (callback) {
         if (!db) {
-            mongoose.connect('mongodb://localhost/test');
+            //TODO: move connection string to config
+            mongoose.connect('mongodb://localhost/test1');
             var newDb = mongoose.connection;
             db = newDb;    
-            db.on('error', errorCb);
+            db.on('error', function (error) {
+                callback(error, null);    
+            });
+            
             db.once('open', function () { 
-                successCb(db);
+                callback(null, db);
             });
         }
         else {
-            successCb(db);
+            callback(null, db);
         }
     },
 

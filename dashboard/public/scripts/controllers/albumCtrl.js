@@ -9,13 +9,13 @@
     angular.module('controllers').controller('albumCtrl', ['utilityService', 'constants', 'albumService',
         '$state', 'uuidService', function (utilityService, constants, albumService, $state, uuidService) {
         var that = this;
-        /*albumService.getAlbums().then(function (albums) { 
+        albumService.getAlbums().then(function (albums) { 
             that.albums = albums;
             console.log(that.albums);
         }, function (error) { 
             console.log(error);
         });
-        */
+        
         this.cancelAddNewAlbum = function () {
             delete that.album;
             $state.go('manageAlbumsState.list');
