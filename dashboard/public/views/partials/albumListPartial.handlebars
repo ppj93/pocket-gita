@@ -1,6 +1,6 @@
 <div>
     <div>
-        <button type="button" class="btn btn-primary" ng-click="albCtrl.setupAddNewAlbum()">Add New Album</button>
+        <button type="button" class="btn btn-primary" ng-click="albCtrl.setupModifyAlbum()">Add New Album</button>
     </div> 
 
     <!--
@@ -18,7 +18,7 @@
             </thead>
             <tbody>
                 <tr class="row" ng-repeat="album in albCtrl.albums">
-                    <td class="col-md-10">[{album.name}]</td>
+                    <td class="col-md-10">{[album.name]}</td>
                     <td class="col-md-2">
                         <button type="button" class="btn btn-primary">Edit</button>
                         <button type="button" class="btn btn-danger">Delete</button>

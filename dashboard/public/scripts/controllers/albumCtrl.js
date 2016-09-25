@@ -22,13 +22,13 @@
             });
         };
         
-        this.cancelAddNewAlbum = function () {
+        this.cancelModifyAlbum = function () {
             delete that.album;
             $state.go('manageAlbumsState.list');
         };
 
-        this.addAlbum = function (album) {
-            albumService.addAlbum(album).then(function (response) { 
+        this.submitModifyAlbum = function (album) {
+            albumService.modifyAlbum(album).then(function (response) { 
                 that.message = utilityService.constructMessageObject(constants.messageTypes.success, "Added successfully");
                 /** Delete album variable used to store the temporary album object */
                 delete that.album;
@@ -38,13 +38,16 @@
             });  
         };
             
-        this.setupAddNewAlbum = function () {
+        this.setupModifyAlbum = function () {
             that.fieldsInEditMode = true;
-            that.album = {
-                id: uuidService.v1()
-            };
+            
+            if ($state.current.name !== 'manageAlbumsState.albumDetails') {
+                that.album = {
+                    id: uuidService.v1()
+                };
 
-            $state.go('manageAlbumsState.albumDetails', { id: that.album.id });
+                $state.go('manageAlbumsState.albumDetails', { id: that.album.id });
+            }
         };
             
         /** Start execution here */
