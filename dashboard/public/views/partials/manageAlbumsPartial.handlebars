@@ -1,10 +1,11 @@
 <div ng-controller="albumCtrl as albCtrl">
 
-    <div ng-if="albCtrl.message" class="alert"  
+    <div action-status-message controller="albCtrl" message="message"></div>
+    <!--<div ng-if="albCtrl.message" class="alert"  
         ng-class="{'alert-danger': albCtrl.message.type === 'error', 
             'alert-success': albCtrl.message.type==='success'}" role="alert">
         {[albCtrl.message.text]}
     </div>
-
+-->
     <ui-view></ui-view>
 </div>

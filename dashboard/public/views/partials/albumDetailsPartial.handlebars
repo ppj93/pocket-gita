@@ -32,7 +32,7 @@
             </div>
             <div ng-if="!albCtrl.fieldsInEditMode">
                 <span ng-if="!albCtrl.album.thumbnailUrl">No thumbnail set yet</span>
-                <img ng-if="albCtrl.album.thumbnailUrl" src="{[albCtrl.album.thumbnailUrl]}" alt="Thumbnail Url">
+                <img ng-if="albCtrl.album.thumbnailUrl" ng-src="{[albCtrl.album.thumbnailUrl]}" alt="Thumbnail Url">
             </div>
         </div>
     </div>
