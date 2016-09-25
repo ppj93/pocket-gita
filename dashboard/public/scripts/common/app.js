@@ -26,5 +26,7 @@
         'config'
     ]);
 
-    angular.module('pocketGita', ['controllers', 'config']);
+    /* Make sure u include directives in dependent modules below. else none of the directives
+    will work */
+    angular.module('pocketGita', ['controllers', 'config', 'directives']);
 })();

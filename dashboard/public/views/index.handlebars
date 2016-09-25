@@ -7,11 +7,12 @@
         
         <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" crossorigin="anonymous">
 
+        <!--TODO: remove local folders & add link to cdn-->
         <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-theme.min.css" crossorigin="anonymous">
         <script src="lib/jquery.js"></script>
         <script src="lib/bootstrap/js/bootstrap.min.js" crossorigin="anonymous"></script>
 
-        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
         <script src="lib/angular.min.js"></script>
         <script src="lib/angular-ui-router.js"></script>
         <script src="lib/uuid.js"></script>
@@ -20,11 +21,13 @@
         <script src="scripts/common/config.js"></script>
         <script src="scripts/services/uuidService.js"></script>
         <script src="scripts/common/constants.js"></script>
+        <script src="scripts/services/underscoreService.js"></script>
         <script src="scripts/services/utilityService.js"></script>
         <script src="scripts/controllers/albumCtrl.js"></script>
         <script src="scripts/services/albumService.js"></script>
         <script src="scripts/directives/nItemsInRow.js"></script>
         <script src="scripts/directives/actionStatusMessage.js"></script>
+        <script src="scripts/directives/activateSingleChildLiOnClick.js"></script>
 
     </head>
 
@@ -35,7 +38,7 @@
                     <a class="navbar-brand" href="#">Pocket Gita - Admin</a>
                 </div>
 
-                <div class="nav navbar-nav">
+                <div activate-single-child-li-on-click class="nav navbar-nav">
                     <li class="active"><a ui-sref="manageAlbumsState.list">Album View</a></li>
                     <li><a ui-sref="manageTracksState">Track View</a></li>
                 </div>

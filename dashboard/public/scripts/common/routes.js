@@ -18,7 +18,7 @@
                 url: '/{id:[0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12}}',
                 templateUrl: 'albumDetailsPartial'
             })
-            .state('trackListState', {
+            .state('manageTracksState', {
                 url: '/tracks',
                 templateUrl: 'trackListPartial'
             });

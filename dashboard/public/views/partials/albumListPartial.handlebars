@@ -1,13 +1,31 @@
 <div>
+    <div>
+        <button type="button" class="btn btn-primary" ng-click="albCtrl.setupAddNewAlbum()">Add New Album</button>
+    </div> 
 
-        <div>
-            <button type="button" class="btn btn-primary" ng-click="albCtrl.setupAddNewAlbum()">Add New Album</button>
-        </div> 
-        <div n-items-in-row n="3" controller="albCtrl" items="albums" 
-        row-template="/albumListRowPartial">
-            
-        </div>
-        [{albCtrl.albums ? albCtrl.albums.length : "ad"}]
-        <h3>hello world</h3>
+    <!--
+        TODO: show album pic also 
+        <div n-items-in-row n="3" controller="albCtrl" items="albums" row-template="/albumListRowPartial"></div>
+    -->
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr class="row">
+                    <th class="col-md-10">Name</th>
+                    <th class="col-md-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="row" ng-repeat="album in albCtrl.albums">
+                    <td class="col-md-10">[{album.name}]</td>
+                    <td class="col-md-2">
+                        <button type="button" class="btn btn-primary">Edit</button>
+                        <button type="button" class="btn btn-danger">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     
 </div>
