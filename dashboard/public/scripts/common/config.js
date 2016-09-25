@@ -4,8 +4,7 @@
     angular.module('config')
         .constant('serviceUrls', {
             getAlbums: "/getAlbums",
-            addAlbum: "/addAlbum",
-            editAlbum: "/editAlbum",
+            modifyAlbum: "/modifyAlbum",
             deleteAlbum: "/deleteAlbum",
             getTracks: "/getTracks",
             addTrack: "/addTrack",

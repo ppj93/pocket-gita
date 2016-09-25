@@ -26,7 +26,7 @@ var connectToDb = function (callback) {
 module.exports = {
     registerRoutes: function (app) {
         app.post('/getAlbums', this.getAlbums);
-        app.post('/addAlbum', this.addAlbum);
+        app.post('/modifyAlbum', this.modifyAlbum);
     },
     
     getAlbums: function (request, response) {
@@ -78,7 +78,7 @@ module.exports = {
 
     },
     
-    addAlbum: function (request, response) {
+    modifyAlbum: function (request, response) {
         var newAlbum = request.body.album;
         
         if (!requestValidations.isAddAlbumRequestValid(request.body)) {

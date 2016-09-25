@@ -41,6 +41,8 @@
         this.setupModifyAlbum = function () {
             that.fieldsInEditMode = true;
             
+            delete that.message;
+            
             if ($state.current.name !== 'manageAlbumsState.albumDetails') {
                 that.album = {
                     id: uuidService.v1()
