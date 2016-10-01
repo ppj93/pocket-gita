@@ -4,13 +4,13 @@ var operationResults = require('../../common/constants').operationResults,
     appConfig = require('../config').appConfig,
     mongoUtil = require('../../common/mongoUtil'),
     mongoose = require('mongoose'),
-    albumModel = mongoose.model('album'),
+    albumModel = mongoose.model('../models/album'),
     requestValidations = require('./requestValidations'),
     uuidGen = require('node-uuid'),
     _ = require('underscore'),
     async = require('async'),
     utilities = require('../../common/utilities'),
-    trackModel = mongoose.model('track');
+    trackModel = mongoose.model('../models/track');
 
 var connectToDb = function (callback) { 
     mongoUtil.connectToDb(function (error, db) {
@@ -27,7 +27,7 @@ var connectToDb = function (callback) {
 module.exports = {
     registerRoutes: function (app) {
         app.post('/getAlbums', this.getAlbums);
-        app.post('/modifyAlbum', this.modifyAlbum);
+        app.post('/addAlbum', this.addAlbum);
     },
     
     getAlbums: function (request, response) {
@@ -83,7 +83,7 @@ module.exports = {
 
     },
     
-    modifyAlbum: function (request, response) {
+    addAlbum: function (request, response) {
         var newAlbum = request.body.album;
         
         if (!requestValidations.isAddAlbumRequestValid(request.body)) {
@@ -94,8 +94,9 @@ module.exports = {
         }
 
         var checkIfAlbumExists = function (callback) {
-            albumModel.find({ $or: [{ name: newAlbum.name }, { nameInUrl: newAlbum.nameInUrl }] })
+            albumModel.find({ $or: [{id: newAlbum.id}, { name: newAlbum.name }, { nameInUrl: newAlbum.nameInUrl }] })
                 .lean() //tells Mongoose to skip step of creating full model & directly get a doc
+                .select('id name nameInUrl')
                 .exec(function (error, albums) { 
                     if (error) {
                         callback({
@@ -105,7 +106,12 @@ module.exports = {
                     }
 
                     if (albums.length > 0) {
-                        if (albums[0].name === newAlbum.name) {
+                        if (albums[0].id === newAlbum.id) {
+                            callback({
+                                result: operationResults.albumOps.idAlreadyExists
+                            });
+                        }
+                        else if (albums[0].name === newAlbum.name) {
                             callback({
                                 result: operationResults.albumOps.addAlbumNameExists
                             });
@@ -122,32 +128,34 @@ module.exports = {
                 });
         };
 
-        var executeAddAlbum = function (newAlbum, callback) {
+        var getTrackIds = function (newAlbum, callback) {
+            if (newAlbum.trackIds && newAlbum.trackIds.length === 0) {
+                callback(null, newAlbum, []);
+                return;
+            }
 
-            var x = new trackModel({
-                id: "12021212",
-                name: "af",
-                nameInUrl: "adf",
-                trackUrl: "asdf"
-            });
+            trackModel.find({ id: { $in: newAlbum.trackIds } })
+                .lean()
+                .select('_id')
+                .exec(function (error, tracks) { 
+                    if (error) {
+                        callback({
+                            result: operationResults.problemConnectingToDb
+                        });
+                        return;
+                    }
 
-            x.save(function (error) {
-                if (error) {
-                    callback({
-                        result: {
-                            code: "12",
-                            message: "track creation failed"
-                        }
-                    });
-                }
+                    callback(null, newAlbum, tracks);
+                });      
+        };
 
-               
-
+        var executeAddAlbum = function (newAlbum, tracks, callback) {
+            
             var newAlbumModel = new albumModel({
                 id: newAlbum.id,
                 name: newAlbum.name,
                 thumbnailUrl: newAlbum.thumbnailUrl,
-                tracks: [x.toObject()._id],
+                tracks: tracks,
                 description: newAlbum.description,
                 nameInUrl: newAlbum.nameInUrl
             });
@@ -163,8 +171,6 @@ module.exports = {
                 });
                 return;
             });
-                 
-            });
         };
 
         /**
@@ -173,6 +179,7 @@ module.exports = {
         async.waterfall([
             connectToDb,
             checkIfAlbumExists,
+            getTrackIds,
             executeAddAlbum
         ],
             utilities.getUiJsonResponseSender(response)

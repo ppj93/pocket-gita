@@ -19,6 +19,10 @@ exports.operationResults = {
         message: 'DB Operation failed'
     },
     albumOps: {
+        id: {
+            code: 'ER_7',
+            message: 'Album id already exists. Contact dev team.'
+        },
         addAlbumNameExists: {
             code: 'ER_5',
             message: 'Album name already exists'
