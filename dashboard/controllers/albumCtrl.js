@@ -9,7 +9,8 @@ var operationResults = require('../../common/constants').operationResults,
     uuidGen = require('node-uuid'),
     _ = require('underscore'),
     async = require('async'),
-    utilities = require('../../common/utilities');
+    utilities = require('../../common/utilities'),
+    trackModel = mongoose.model('track');
 
 var connectToDb = function (callback) { 
     mongoUtil.connectToDb(function (error, db) {
@@ -46,26 +47,30 @@ module.exports = {
 
         var execGetAlbums = function (callback) {
             /**We are connected to db. ready to fetch albums */
-            albumModel.find({}, function (error, albums) {
-                if (error) {
-                    callback({
-                        result: operationResults.dbOperationFailed
-                    });
-                    return;
-                }
+            albumModel.find({})
+                .lean()
+                .select('id name')
+                .exec(function (error, albums) {
+                    if (error) {
+                        callback({
+                            result: operationResults.dbOperationFailed
+                        });
+                        return;
+                    }
 
-                var albumListViewModel = _.map(albums, function (album) { 
-                    return {
-                        id: album.id,
-                        name: album.name,
-                        thumbnailUrl: album.thumbnailUrl
-                    };
+                    var albumListViewModel = _.map(albums, function (album) { 
+                        return {
+                            id: album.id,
+                            name: album.name,
+                            thumbnailUrl: album.thumbnailUrl
+                        };
+                    });
+
+                    callback(null, {
+                        result: operationResults.success,
+                        albums: albumListViewModel
+                    });
                 });
-                callback(null, {
-                    result: operationResults.success,
-                    albums: albumListViewModel
-                });
-            });
         };
 
         /**Always write below line after defining functions you want to use. Else functions will come as undefined */
@@ -119,11 +124,30 @@ module.exports = {
 
         var executeAddAlbum = function (newAlbum, callback) {
 
+            var x = new trackModel({
+                id: "12021212",
+                name: "af",
+                nameInUrl: "adf",
+                trackUrl: "asdf"
+            });
+
+            x.save(function (error) {
+                if (error) {
+                    callback({
+                        result: {
+                            code: "12",
+                            message: "track creation failed"
+                        }
+                    });
+                }
+
+               
+
             var newAlbumModel = new albumModel({
                 id: newAlbum.id,
                 name: newAlbum.name,
                 thumbnailUrl: newAlbum.thumbnailUrl,
-                trackIds: newAlbum.trackIds,
+                tracks: [x.toObject()._id],
                 description: newAlbum.description,
                 nameInUrl: newAlbum.nameInUrl
             });
@@ -138,6 +162,8 @@ module.exports = {
                     result: operationResults.success
                 });
                 return;
+            });
+                 
             });
         };
 

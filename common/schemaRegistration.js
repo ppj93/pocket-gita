@@ -7,12 +7,20 @@ var albumSchemaObj = {
     id: String,
     name: String,
     thumbnailUrl: String,
-    trackIds: [String],
+    tracks: [{type: mongoose.Schema.Types.ObjectId, ref: "track"}],
     nameInUrl: String,
     description: String
 };
 
+var trackSchemaObj = {
+    id: String,
+    name: String,
+    album: {type: mongoose.Schema.Types.ObjectId, ref: 'album'},
+    nameInUrl: String,
+    audioUrl: String
+};
 
 exports.registerModules = function () {
+    mongoose.model('track', mongoose.Schema(trackSchemaObj, {collection: 'track'}));    
     mongoose.model('album', mongoose.Schema(albumSchemaObj, {collection: 'album'}));    
 };
