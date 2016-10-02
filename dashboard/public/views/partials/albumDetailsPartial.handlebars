@@ -48,7 +48,7 @@
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <div ng-if="albCtrl.fieldsInEditMode">
-                <button class="btn btn-primary" ng-disabled="modifyAlbumForm.$invalid" ng-click="albCtrl.submitModifyAlbum(albCtrl.album)">Submit</button>
+                <button class="btn btn-primary" ng-disabled="modifyAlbumForm.$invalid" ng-click="albCtrl.submitAddAlbum(albCtrl.album)">Submit</button>
                 <button class="btn btn-danger" ng-click="albCtrl.cancelModifyAlbum()">Cancel</button>
             </div>
             <div ng-if="!albCtrl.fieldsInEditMode">

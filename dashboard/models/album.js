@@ -1,4 +1,4 @@
-var mongoUtil = require('../common/mongoUtil');
+var mongoUtil = require('../../common/mongoUtil');
 var mongoose = require('mongoose');
 
 var albumSchemaObj = {

@@ -27,8 +27,8 @@
             $state.go('manageAlbumsState.list');
         };
 
-        this.submitModifyAlbum = function (album) {
-            albumService.modifyAlbum(album).then(function (response) { 
+        this.submitAddAlbum = function (album) {
+            albumService.addAlbum(album).then(function (response) { 
                 that.message = utilityService.constructMessageObject(constants.messageTypes.success, "Added successfully");
                 /** Delete album variable used to store the temporary album object */
                 delete that.album;
@@ -38,18 +38,16 @@
             });  
         };
             
-        this.setupModifyAlbum = function () {
+        this.setupAddAlbum = function () {
             that.fieldsInEditMode = true;
             
-            delete that.message;
+            delete that.message;            
             
-            if ($state.current.name !== 'manageAlbumsState.albumDetails') {
-                that.album = {
-                    id: uuidService.v1()
-                };
+            that.album = {
+                id: uuidService.v1()
+            };
 
-                $state.go('manageAlbumsState.albumDetails', { id: that.album.id });
-            }
+            $state.go('manageAlbumsState.albumDetails', { id: that.album.id });
         };
             
         /** Start execution here */

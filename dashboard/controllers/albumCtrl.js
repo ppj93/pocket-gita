@@ -4,13 +4,13 @@ var operationResults = require('../../common/constants').operationResults,
     appConfig = require('../config').appConfig,
     mongoUtil = require('../../common/mongoUtil'),
     mongoose = require('mongoose'),
-    albumModel = mongoose.model('../models/album'),
+    albumModel = require('../models/album'),
     requestValidations = require('./requestValidations'),
     uuidGen = require('node-uuid'),
     _ = require('underscore'),
     async = require('async'),
     utilities = require('../../common/utilities'),
-    trackModel = mongoose.model('../models/track');
+    trackModel = require('../models/track');
 
 var connectToDb = function (callback) { 
     mongoUtil.connectToDb(function (error, db) {

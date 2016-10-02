@@ -26,14 +26,14 @@
             }, utilityService.handleNetworkError);
         };
             
-        service.modifyAlbum = function (album) {
+        service.addAlbum = function (album) {
             var request = {
                 requestBase: {
                     requestId: uuidService.v1()
                 },
                 album: album
             };
-            return $http.post(serviceUrls.modifyAlbum, request).then(function (response) {
+            return $http.post(serviceUrls.addAlbum, request).then(function (response) {
                 var data = response.data;
                 /**
                  * Always use === and !== for comparison. Check google for reason.!
