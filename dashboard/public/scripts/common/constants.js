@@ -5,6 +5,10 @@
             messageTypes: {
                 error: "error",
                 success: "success"
+            },
+            actions: {
+                add: 'add',
+                edit: 'edit'
             }
         })
 })();
