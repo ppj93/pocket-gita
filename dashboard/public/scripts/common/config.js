@@ -6,6 +6,7 @@
             getAlbums: "/getAlbums",
             addAlbum: "/addAlbum",
             deleteAlbum: "/deleteAlbum",
+            editAlbum: "/editAlbum",
             getTracks: "/getTracks",
             addTrack: "/addTrack",
             editTrack: "/editTrack",

@@ -29,7 +29,11 @@ exports.operationResults = {
         },
         trackIdBeingAddedNotFound: {
             code: 'ER_6',
-            message: 'Track Id you are trying to add not found in Database. Contact dev team.'
+            message: 'Track Id you are trying to add does not exist in Database. Contact dev team.'
+        },
+        albumBeingEditedDoesNotExist: {
+            code: 'ER_8',
+            message: 'Album you are trying to edit does not exist in Database. Contact dev team.'
         }
     }
 };
