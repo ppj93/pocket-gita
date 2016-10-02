@@ -5,7 +5,6 @@ var trackSchemaObj = {
     id: String,
     name: String,
     album: {type: mongoose.Schema.Types.ObjectId, ref: 'album'},
-    nameInUrl: String,
     audioUrl: String
 };
 
