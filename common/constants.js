@@ -27,9 +27,9 @@ exports.operationResults = {
             code: 'ER_5',
             message: 'Album name already exists'
         },
-        addAlbumNameInUrlExists: {
+        trackIdBeingAddedNotFound: {
             code: 'ER_6',
-            message: 'Name in url already exists'
+            message: 'Track Id you are trying to add not found in Database. Contact dev team.'
         }
     }
 };

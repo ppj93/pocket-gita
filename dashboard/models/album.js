@@ -6,7 +6,6 @@ var albumSchemaObj = {
     name: String,
     thumbnailUrl: String,
     tracks: [{type: mongoose.Schema.Types.ObjectId, ref: "track"}],
-    nameInUrl: String,
     description: String
 };
 

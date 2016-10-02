@@ -28,6 +28,7 @@ module.exports = {
     registerRoutes: function (app) {
         app.post('/getAlbums', this.getAlbums);
         app.post('/addAlbum', this.addAlbum);
+        app.post('/editAlbum', this.editAlbum);
     },
     
     getAlbums: function (request, response) {
@@ -83,9 +84,9 @@ module.exports = {
 
     },
     
-    addAlbum: function (request, response) {
-        var newAlbum = request.body.album;
-        
+    editAlbum: function (request, response) {
+        var album = request.body.album;
+
         if (!requestValidations.isAddAlbumRequestValid(request.body)) {
             response.json({
                 result: operationResults.invalidRequest
@@ -94,9 +95,9 @@ module.exports = {
         }
 
         var checkIfAlbumExists = function (callback) {
-            albumModel.find({ $or: [{id: newAlbum.id}, { name: newAlbum.name }, { nameInUrl: newAlbum.nameInUrl }] })
+            albumModel.find({ $or: [{ id: newAlbum.id }, { name: newAlbum.name }, { nameInUrl: newAlbum.nameInUrl }] })
                 .lean() //tells Mongoose to skip step of creating full model & directly get a doc
-                .select('id name nameInUrl')
+                .select('id name')
                 .exec(function (error, albums) { 
                     if (error) {
                         callback({
@@ -116,28 +117,64 @@ module.exports = {
                                 result: operationResults.albumOps.addAlbumNameExists
                             });
                         }
-                        else if (albums[0].nameInUrl === newAlbum.nameInUrl) {
-                            callback({
-                                result: operationResults.albumOps.addAlbumNameInUrlExists
-                            });
-                        }
                         return;
                     }
 
                     callback(null, newAlbum);
                 });
         };
+    },
+
+    addAlbum: function (request, response) {
+        var newAlbum = request.body.album;
+        
+        if (!requestValidations.isAddAlbumRequestValid(request.body)) {
+            response.json({
+                result: operationResults.invalidRequest
+            });
+            return;
+        }
+
+        var checkIfAlbumExists = function (callback) {
+            albumModel.find({ $or: [{id: newAlbum.id}, { name: newAlbum.name }] })
+                .lean() //tells Mongoose to skip step of creating full model & directly get a doc
+                .select('id name')
+                .exec(function (error, albums) { 
+                    if (error) {
+                        callback({
+                            result: operationResults.problemConnectingToDb
+                        });
+                        return;
+                    }
+
+                    if (albums.length > 0) {
+                        if (albums[0].id === newAlbum.id) {
+                            callback({
+                                result: operationResults.albumOps.idAlreadyExists
+                            });
+                            return;
+                        }
+                        else if (albums[0].name === newAlbum.name) {
+                            callback({
+                                result: operationResults.albumOps.addAlbumNameExists
+                            });
+                            return;
+                        }
+                    }
+                    callback(null, newAlbum);
+                });
+        };
 
         var getTrackIds = function (newAlbum, callback) {
-            if (newAlbum.trackIds && newAlbum.trackIds.length === 0) {
+            if (!newAlbum.trackIds || newAlbum.trackIds.length === 0) {
                 callback(null, newAlbum, []);
                 return;
             }
 
             trackModel.find({ id: { $in: newAlbum.trackIds } })
                 .lean()
-                .select('_id')
-                .exec(function (error, tracks) { 
+                .select('_id id')
+                .exec(function (error, tracks) {
                     if (error) {
                         callback({
                             result: operationResults.problemConnectingToDb
@@ -146,9 +183,25 @@ module.exports = {
                     }
 
                     callback(null, newAlbum, tracks);
-                });      
+                });
         };
 
+        var checkTrackIdValidity = function (newAlbum, tracks, callback) {
+            var foundErroneousTrackId = false;
+            _.each(newAlbum.trackIds, function (trackId) {
+                if (!_.some(tracks, function (track) { return track.id === trackId; })) {
+                    foundErroneousTrackId = true;
+                    callback({
+                        result: operationResults.albumOps.trackIdBeingAddedNotFound
+                    });
+                }
+            });
+
+            if (!foundErroneousTrackId) {
+                callback(null, newAlbum, tracks);
+            }
+        };
+        
         var executeAddAlbum = function (newAlbum, tracks, callback) {
             
             var newAlbumModel = new albumModel({
@@ -156,8 +209,7 @@ module.exports = {
                 name: newAlbum.name,
                 thumbnailUrl: newAlbum.thumbnailUrl,
                 tracks: tracks,
-                description: newAlbum.description,
-                nameInUrl: newAlbum.nameInUrl
+                description: newAlbum.description
             });
             newAlbumModel.save(function (error) {
                 if (error) {
@@ -180,6 +232,7 @@ module.exports = {
             connectToDb,
             checkIfAlbumExists,
             getTrackIds,
+            checkTrackIdValidity,
             executeAddAlbum
         ],
             utilities.getUiJsonResponseSender(response)
