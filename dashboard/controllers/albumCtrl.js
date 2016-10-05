@@ -12,17 +12,6 @@ var operationResults = require('../../common/constants').operationResults,
     utilities = require('../../common/utilities'),
     trackModel = require('../models/track');
 
-var connectToDb = function (callback) { 
-    mongoUtil.connectToDb(function (error, db) {
-        if (error) {
-            callback({
-                result: operationResults.problemConnectingToDb
-            });
-            return;
-        }
-        callback(null);
-    });
-};
 var getTrackIds = function (newAlbum, extras, callback) {
     if (!newAlbum.trackIds || newAlbum.trackIds.length === 0) {
         callback(null, newAlbum, [], extras);
@@ -67,6 +56,53 @@ module.exports = {
         app.post('/editAlbum', this.editAlbum);
     },
     
+    searchAlbumByName: function (request, response) {
+        var searchText = request.body.searchText;
+        
+
+        var results = [];
+
+        var insertAlbumInResultsIfNotPresent = function (album) {
+            if (!_.some(results, function (resultAlbum) {
+                return resultAlbum.id === album.id;
+            })) {
+                results.push(album);
+            }
+        };
+        
+        var getResultAlbums = function (term, callback) {
+            albumModel.find({ $text: term })
+                .lean()
+                .select('id name')
+                .exec(function (error, albums) { 
+                    if (error) {
+                        callback({
+                            result: operationResults.problemConnectingToDb
+                        });
+                        return;
+                    }
+                    callback(null, albums);
+                });
+        };
+        
+        _.each(searchText.split(' '), function (text) {
+            albumModel.find({ $text: text })
+                .lean()
+                .select('id name')
+                .exec(function (error, albums) {
+                    _.each(albums, function (album) { insertAlbumInResultsIfNotPresent(album); });
+                });
+        });
+
+        /**Always write below line after defining functions you want to use. Else functions will come as undefined */
+        async.waterfall([
+            execGetAlbums
+        ],
+            utilities.getUiJsonResponseSender(response)
+        );        
+
+    },
+
     getAlbums: function (request, response) {
         var reqBody = request.body;
 
@@ -112,7 +148,6 @@ module.exports = {
 
         /**Always write below line after defining functions you want to use. Else functions will come as undefined */
         async.waterfall([
-            connectToDb,
             execGetAlbums
         ],
             utilities.getUiJsonResponseSender(response)
@@ -174,7 +209,6 @@ module.exports = {
         };
 
         async.waterfall([
-            connectToDb,
             checkIfAlbumExists,
             getTrackIds,
             checkTrackIdValidity,
@@ -252,7 +286,6 @@ module.exports = {
          * Task execution flow
          */
         async.waterfall([
-            connectToDb,
             checkIfAlbumExists,
             getTrackIds,
             checkTrackIdValidity,

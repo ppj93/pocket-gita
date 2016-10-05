@@ -11,4 +11,6 @@ var albumSchemaObj = {
 
 var albumSchema = mongoose.Schema(albumSchemaObj, { collection: 'album' });
 
+albumSchema.index({ name: 'text' });
+
 module.exports = mongoose.model('album', albumSchema);
