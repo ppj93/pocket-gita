@@ -54,49 +54,33 @@ module.exports = {
         app.post('/getAlbums', this.getAlbums);
         app.post('/addAlbum', this.addAlbum);
         app.post('/editAlbum', this.editAlbum);
+        app.post('/searchAlbumByName', this.searchAlbumByName);
     },
     
     searchAlbumByName: function (request, response) {
         var searchText = request.body.searchText;
-        
-
-        var results = [];
-
-        var insertAlbumInResultsIfNotPresent = function (album) {
-            if (!_.some(results, function (resultAlbum) {
-                return resultAlbum.id === album.id;
-            })) {
-                results.push(album);
-            }
-        };
-        
-        var getResultAlbums = function (term, callback) {
-            albumModel.find({ $text: term })
+    
+        var getResultAlbums = function (callback) {
+            albumModel.find({ $text: { $search: searchText } })
                 .lean()
                 .select('id name')
                 .exec(function (error, albums) { 
                     if (error) {
                         callback({
-                            result: operationResults.problemConnectingToDb
+                            result: operationResults.dbOperationFailed
                         });
                         return;
                     }
-                    callback(null, albums);
+                    callback(null, {
+                        result: operationResults.success,
+                        albums: albums
+                    });
                 });
         };
-        
-        _.each(searchText.split(' '), function (text) {
-            albumModel.find({ $text: text })
-                .lean()
-                .select('id name')
-                .exec(function (error, albums) {
-                    _.each(albums, function (album) { insertAlbumInResultsIfNotPresent(album); });
-                });
-        });
 
         /**Always write below line after defining functions you want to use. Else functions will come as undefined */
         async.waterfall([
-            execGetAlbums
+            getResultAlbums
         ],
             utilities.getUiJsonResponseSender(response)
         );        
