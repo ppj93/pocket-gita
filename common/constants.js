@@ -52,6 +52,15 @@ exports.operationResults = {
         nameEmpty: {
             code: 'ER_10',
             message: 'Track name is empty. Contact dev team.'
+        },
+        albumNotPresentInDb: {
+            code: 'ER_13',
+            message: 'The album you have associated with track does not exist. Contact dev team'
+        },
+        trackBeingEditedDoesNotExist: {
+            code: 'ER_14',
+            message: 'Album you are trying to edit does not exist in Database. Contact dev team'
         }
+
     }
 };
