@@ -2,8 +2,14 @@ var mongoUtil = require('../../common/mongoUtil');
 var mongoose = require('mongoose');
 
 var trackSchemaObj = {
-    id: String,
-    name: String,
+    id: {
+        type: String,
+        required: true
+    },
+    name: {
+        type: String,
+        required: true
+    },
     album: {type: mongoose.Schema.Types.ObjectId, ref: 'album'},
     audioUrl: String
 };

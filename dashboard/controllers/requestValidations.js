@@ -5,18 +5,42 @@ exports.requestValidations = {
     addAlbum: this.isAddAlbumRequestValid
 };
 
+var that = this;
+
 this.isRequestBaseValid = function (requestBase) {
     return requestBase && requestBase.requestId;
 };
 
-this.validateRequestBase = function (requestBase, extras, callback) {
+this.validateTrackObject = function (track, callback) {
+    var result = null;
+    if (!track.id || track.id === undefined) {
+        result = operationResults.trackOps.trackIdEmpty;
+    }
+    else if (!track.name || track.name === undefined) {
+        result = operationResults.trackOps.trackNameEmpty;
+    }
+    callback(result);
+};
+
+this.validateAlbumObject = function (album, callback) {
+    var result = null;
+    if (!album.id | album.id === undefined) {
+        result = operationResults.albumOps.idEmpty;
+    }
+    else if (!album.name || album.name === undefined) {
+        result = operationResults.albumOps.nameEmpty;
+    }
+    callback(result);
+};
+
+this.validateRequestBase = function (requestBase, callback) {
     if (!requestBase || !requestBase.requestId) {
         callback({
             result: operationResults.invalidRequest
         });
         return;
     }
-    callback(null, extras);
+    callback(null);
 };
 
 /** TODO: Try moving to controller file + in built validations */

@@ -34,6 +34,24 @@ exports.operationResults = {
         albumBeingEditedDoesNotExist: {
             code: 'ER_8',
             message: 'Album you are trying to edit does not exist in Database. Contact dev team.'
+        },
+        idEmpty: {
+            code: 'ER_11',
+            message: 'Album id is empty. Contact dev team.'
+        },
+        nameEmpty: {
+            code: 'ER_12',
+            message: 'Album name is empty. Contact dev team.'
+        }
+    },
+    trackOps: {
+        idEmpty: {
+            code: 'ER_9',
+            message: 'Track id is empty. Contact dev team.'
+        },
+        nameEmpty: {
+            code: 'ER_10',
+            message: 'Track name is empty. Contact dev team.'
         }
     }
 };
