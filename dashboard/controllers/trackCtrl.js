@@ -69,7 +69,7 @@ module.exports = {
                         });
                         return;
                     }
-                    
+
                     callback(null, {
                         result: operationResults.success,
                         tracks: tracks
@@ -111,11 +111,11 @@ module.exports = {
                         return;
                     }
                     
-                    callback(null, track);
+                    callback(null, { dbTrack: track });
                 });
         };
 
-        var checkIfAlbumExists = function (callback) {
+        var checkIfAlbumExists = function (extras, callback) {
             if (!editTrack.albumId) {
                 callback(null);
                 return;
@@ -138,27 +138,22 @@ module.exports = {
                         return;
                     }
                     
-                    callback(null, album);
+                    callback(null, album, extras);
                 });    
         };        
-        var executeEditTrack = function (dbTrack, callback) {
+        var executeEditTrack = function (dbAlbum, extras, callback) {
+            var dbTrack = extras.dbTrack;
             for (var field in editTrack) {
                 if (!editTrack[field]) {
                     continue;
                 }
 
-                var trackChanged = false;
-            
                 if (field === 'album') {
                     if (editTrack[field].albumId !== dbTrack[field].albumId) {
-                        trackChanged = true;        
+                        dbTrack[field] = dbAlbum;         
                     }
                 }
                 else if (editTrack[field] !== dbTrack[field]) {//field value has changed
-                    trackChanged = true;
-                }
-
-                if (trackChanged) {
                     dbTrack[field] = editTrack[field];
                 }
             }
@@ -181,8 +176,8 @@ module.exports = {
         async.waterfall([
             async.constant(request.body.requestBase),
             requestValidations.validateRequestBase,
-            checkIfAlbumExists,
             checkIfTrackExists,
+            checkIfAlbumExists,
             executeEditTrack
         ],
             utilities.getUiJsonResponseSender(response)

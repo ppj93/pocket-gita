@@ -60,11 +60,11 @@ exports.operationResults = {
         },
         albumNotPresentInDb: {
             code: 'ER_13',
-            message: 'The album you have associated with track does not exist. Contact dev team'
+            message: 'The album you have associated with track does not exist in Database. Contact dev team'
         },
         trackBeingEditedDoesNotExist: {
             code: 'ER_14',
-            message: 'Album you are trying to edit does not exist in Database. Contact dev team'
+            message: 'Track you are trying to edit does not exist in Database. Contact dev team'
         },
         addTrackNameAlreadyExists: {
             code: 'ER_16',
