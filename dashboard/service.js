@@ -6,8 +6,9 @@ var express = require('express'),
     app = express(),
     handlebars = require('express-handlebars'),
     bodyParser = require('body-parser'),
-    _ = require('underscore');
-    
+    _ = require('underscore'),
+    albumCtrl = require('./controllers/albumCtrl'),
+    trackCtrl = require('./controllers/trackCtrl');
 
 app.set('port', config.appConfig.port);
 
@@ -23,9 +24,8 @@ app.get('/', function (req, res) {
     res.render('index');
 });
 
-var albumCtrl = require('./controllers/albumCtrl');
-
 albumCtrl.registerRoutes(app);
+trackCtrl.registerRoutes(app);
 
 var autoViews = {};
 app.use(function(req,res,next){

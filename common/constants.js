@@ -4,19 +4,19 @@ exports.operationResults = {
     },
     invalidRequest: {
         code: 'ER_1',
-        message: 'Invalid request sent'
+        message: 'Invalid request sent. Contact dev team.'
     },
     internalError: {
         code: 'ER_2',
-        message: 'Internal error occurred'
+        message: 'Internal error occurred. Contact dev team.'
     },
     problemConnectingToDb: {
         code: 'ER_3',
-        message: 'Problem connecting to DB'
+        message: 'Problem connecting to DB. Contact dev team.'
     },
     dbOperationFailed: {
         code: 'ER_4',
-        message: 'DB Operation failed'
+        message: 'DB Operation failed. Contact dev team.'
     },
     albumOps: {
         id: {

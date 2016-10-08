@@ -2,11 +2,8 @@
  
 var operationResults = require('../../common/constants').operationResults,
     appConfig = require('../config').appConfig,
-    mongoUtil = require('../../common/mongoUtil'),
-    mongoose = require('mongoose'),
     albumModel = require('../models/album'),
     requestValidations = require('./requestValidations'),
-    uuidGen = require('node-uuid'),
     _ = require('underscore'),
     async = require('async'),
     utilities = require('../../common/utilities'),
@@ -280,6 +277,8 @@ module.exports = {
          * Task execution flow
          */
         async.waterfall([
+            async.constant(request.body.requestBase),
+            requestValidations.validateRequestBase,
             checkIfTrackExists,
             findAssociatedAlbum,
             executeAddTrack

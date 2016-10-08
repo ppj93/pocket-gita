@@ -16,4 +16,6 @@ var trackSchemaObj = {
 
 var trackSchema = mongoose.Schema(trackSchemaObj, { collection: 'track' });
 
+trackSchema.index({ name: 'text' });
+
 module.exports = mongoose.model('track', trackSchema);
