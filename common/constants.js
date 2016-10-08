@@ -42,7 +42,12 @@ exports.operationResults = {
         nameEmpty: {
             code: 'ER_12',
             message: 'Album name is empty. Contact dev team.'
+        },
+        addAlbumIdAlreadyExists: {
+            code: 'ER_15',
+            message: 'Album Id being added already exists. Contact dev team.'
         }
+
     },
     trackOps: {
         idEmpty: {
@@ -60,6 +65,14 @@ exports.operationResults = {
         trackBeingEditedDoesNotExist: {
             code: 'ER_14',
             message: 'Album you are trying to edit does not exist in Database. Contact dev team'
+        },
+        addTrackNameAlreadyExists: {
+            code: 'ER_16',
+            message: 'Track name already exists'
+        },
+        addTrackIdAlreadyExists: {
+            code: 'ER_15',
+            message: 'Track Id being added already exists. Contact dev team.'
         }
 
     }

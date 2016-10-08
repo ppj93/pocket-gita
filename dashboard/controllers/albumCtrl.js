@@ -228,7 +228,7 @@ module.exports = {
                     if (albums.length > 0) {
                         if (albums[0].id === newAlbum.id) {
                             callback({
-                                result: operationResults.albumOps.idAlreadyExists
+                                result: operationResults.albumOps.addAlbumIdAlreadyExists
                             });
                             return;
                         }

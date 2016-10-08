@@ -184,20 +184,13 @@ module.exports = {
     },
 
     addTrack: function (request, response) {
-        var newTrack = request.body.album;
+        var newTrack = request.body.track;
         
-        if (!requestValidations.isAddAlbumRequestValid(request.body)) {
-            response.json({
-                result: operationResults.invalidRequest
-            });
-            return;
-        }
-
-        var checkIfAlbumExists = function (callback) {
-            albumModel.find({ $or: [{id: newAlbum.id}, { name: newAlbum.name }] })
+        var checkIfTrackExists = function (callback) {
+            trackModel.findOne({ $or: [{id: newTrack.id}, { name: newTrack.name }] })
                 .lean() //tells Mongoose to skip step of creating full model & directly get a doc
                 .select('id name')
-                .exec(function (error, albums) { 
+                .exec(function (error, track) { 
                     if (error) {
                         callback({
                             result: operationResults.problemConnectingToDb
@@ -205,34 +198,53 @@ module.exports = {
                         return;
                     }
 
-                    if (albums.length > 0) {
-                        if (albums[0].id === newAlbum.id) {
+                    if (track) {
+                        if (track.id === newTrack.id) {
                             callback({
-                                result: operationResults.albumOps.idAlreadyExists
+                                result: operationResults.TrackOps.addTrackIdAlreadyExists
                             });
                             return;
                         }
-                        else if (albums[0].name === newAlbum.name) {
+                        else if (track.name === newTrack.name) {
                             callback({
-                                result: operationResults.albumOps.addAlbumNameExists
+                                result: operationResults.trackOps.addTrackNameAlreadyExists
                             });
                             return;
                         }
                     }
-                    callback(null, newAlbum, null);
+                    callback(null);
                 });
         };
         
-        var executeAddAlbum = function (newAlbum, tracks, extras, callback) {
+        var findAssociatedAlbum = function (callback) {
+            if (!newTrack.albumId) {
+                callback(null);
+            }
+            else {
+                albumModel.findOne({ id: newTrack.albumId })
+                    .lean()
+                    .select('_id')
+                    .exec(function (error, album) {
+                        if (error) {
+                            callback({
+                                result: operationResults.dbOperationFailed
+                            });
+                            return;
+                        } 
+
+                        callback(null, album);
+                    });
+            }
+        };
+        var executeAddTrack = function (album, callback) {
             
-            var newAlbumModel = new albumModel({
-                id: newAlbum.id,
-                name: newAlbum.name,
-                thumbnailUrl: newAlbum.thumbnailUrl,
-                tracks: tracks,
-                description: newAlbum.description
+            var newTrackModel = new trackModel({
+                id: newTrack.id,
+                name: newTrack.name,
+                album: album,
+                audioUrl: newTrack.audioUrl
             });
-            newAlbumModel.save(function (error) {
+            newTrackModel.save(function (error) {
                 if (error) {
                     callback({
                         result: operationResults.dbOperationFailed
@@ -250,10 +262,9 @@ module.exports = {
          * Task execution flow
          */
         async.waterfall([
-            checkIfAlbumExists,
-            getTrackIds,
-            checkTrackIdValidity,
-            executeAddAlbum
+            checkIfTrackExists,
+            findAssociatedAlbum,
+            executeAddTrack
         ],
             utilities.getUiJsonResponseSender(response)
         );
