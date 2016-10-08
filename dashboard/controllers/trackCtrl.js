@@ -59,28 +59,20 @@ module.exports = {
 
         var execGetTracks = function (callback) {
             /**We are connected to db. ready to fetch albums */
-            albumModel.find({})
+            trackModel.find({})
                 .lean()
                 .select('id name')
-                .exec(function (error, albums) {
+                .exec(function (error, tracks) {
                     if (error) {
                         callback({
                             result: operationResults.dbOperationFailed
                         });
                         return;
                     }
-
-                    var albumListViewModel = _.map(albums, function (album) { 
-                        return {
-                            id: album.id,
-                            name: album.name,
-                            thumbnailUrl: album.thumbnailUrl
-                        };
-                    });
-
+                    
                     callback(null, {
                         result: operationResults.success,
-                        albums: albumListViewModel
+                        tracks: tracks
                     });
                 });
         };
