@@ -20,14 +20,27 @@
             })
             .state('manageTracksState', {
                 url: '/tracks',
+                templateUrl: 'manageTracksPartial',
+                abstract:true
+            })
+            .state('manageTracksState.list', {
+                url: '',
                 templateUrl: 'trackListPartial'
+            })
+            .state('manageTracksState.trackDetails', {
+                /**
+                 * foll reg-exp is for a GUID - each album has a uuid
+                 */
+                url: '/{id:[0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12}}',
+                templateUrl: 'trackDetailsPartial'
             });
+        
         /* If you dont put foll config, you have to attach # to bypass browser
         routing & to let angular to handle routing in non html5 browsers.
         This has to be done so that website works in non html5 browsers. */
 
         $locationProvider.html5Mode(true);
-        //$urlRouterProvider.when('/albums', '/albums/list');
+
         $urlRouterProvider.otherwise('/albums');
     });
 })();

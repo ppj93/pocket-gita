@@ -25,6 +25,8 @@
         <script src="scripts/services/utilityService.js"></script>
         <script src="scripts/controllers/albumCtrl.js"></script>
         <script src="scripts/services/albumService.js"></script>
+        <script src="scripts/controllers/trackCtrl.js"></script>
+        <script src="scripts/services/trackService.js"></script>
         <script src="scripts/directives/nItemsInRow.js"></script>
         <script src="scripts/directives/actionStatusMessage.js"></script>
         <script src="scripts/directives/activateSingleChildLiOnClick.js"></script>
@@ -40,7 +42,7 @@
 
                 <div activate-single-child-li-on-click class="nav navbar-nav">
                     <li class="active"><a ui-sref="manageAlbumsState.list">Album View</a></li>
-                    <li><a ui-sref="manageTracksState">Track View</a></li>
+                    <li><a ui-sref="manageTracksState.list">Track View</a></li>
                 </div>
             </nav>
             <div class="panel panel-default">
