@@ -11,13 +11,19 @@ this.isRequestBaseValid = function (requestBase) {
     return requestBase && requestBase.requestId;
 };
 
-this.validateTrackObject = function (track, callback) {
-    var result = null;
-    if (!track.id || track.id === undefined) {
-        result = operationResults.trackOps.trackIdEmpty;
+/*TODO: rename invalidRequest to invalidRequestBase */
+this.validateEditTrackRequest = function (requestBody, callback) {
+    var result = null,
+        track = requestBody.track;
+    
+    if (!that.isRequestBaseValid(requestBody.requestBase)) {
+        result = operationResults.invalidRequest;
+    }
+    else if (!track.id || track.id === undefined) {
+        result = operationResults.trackOps.idEmpty;
     }
     else if (!track.name || track.name === undefined) {
-        result = operationResults.trackOps.trackNameEmpty;
+        result = operationResults.trackOps.nameEmpty;
     }
     callback(result);
 };

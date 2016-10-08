@@ -173,9 +173,11 @@ module.exports = {
             
         };
 
+        /*TODO: create one method for each operation validation & use it in
+        every chain */
         async.waterfall([
-            async.constant(request.body.requestBase),
-            requestValidations.validateRequestBase,
+            async.constant(request.body),
+            requestValidations.validateEditTrackRequest,
             checkIfTrackExists,
             checkIfAlbumExists,
             executeEditTrack
