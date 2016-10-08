@@ -100,11 +100,11 @@ module.exports = {
     },
     
     editTrack: function (request, response) {
-        var track = request.body.track;
+        var editTrack = request.body.track;
 
         var checkIfTrackExists = function (callback) {
-            trackModel.findOne({ id: track.id })
-                    
+            trackModel.findOne({ id: editTrack.id })
+                .populate('album')
                 .exec(function (error, track) { 
                     if (error) {
                         callback({
@@ -127,32 +127,50 @@ module.exports = {
         };
 
         var checkIfAlbumExists = function (callback) {
-            if (!track.albumId) {
+            if (!editTrack.albumId) {
                 callback(null);
                 return;
             }
-            albumModel.findOne({ id: track.albumId }, function (error, album) {
-                if (error) {
-                    callback({
-                        result: operationResults.dbOperationFailed
-                    });
-                    return;
-                } 
+            albumModel.findOne({ id: editTrack.albumId })
+                .lean()
+                .select('_id id')
+                .exec(function (error, album) {
+                    if (error) {
+                        callback({
+                            result: operationResults.dbOperationFailed
+                        });
+                        return;
+                    } 
 
-                if (!album) {
-                    callback({
-                        result: operationResults.trackOps.albumNotPresentInDb
-                    });
-                    return;
-                }
-                
-                callback(null);
-            });    
+                    if (!album) {
+                        callback({
+                            result: operationResults.trackOps.albumNotPresentInDb
+                        });
+                        return;
+                    }
+                    
+                    callback(null, album);
+                });    
         };        
         var executeEditTrack = function (dbTrack, callback) {
-            for (var field in track) {
-                if (track[field] && (field === 'tracks' || track[field] !== dbTrack[field])) {//field value has changed
-                    dbTrack[field] = track[field];
+            for (var field in editTrack) {
+                if (!editTrack[field]) {
+                    continue;
+                }
+
+                var trackChanged = false;
+            
+                if (field === 'album') {
+                    if (editTrack[field].albumId !== dbTrack[field].albumId) {
+                        trackChanged = true;        
+                    }
+                }
+                else if (editTrack[field] !== dbTrack[field]) {//field value has changed
+                    trackChanged = true;
+                }
+
+                if (trackChanged) {
+                    dbTrack[field] = editTrack[field];
                 }
             }
 
