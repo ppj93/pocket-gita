@@ -28,6 +28,22 @@ this.validateEditTrackRequest = function (requestBody, callback) {
     callback(result);
 };
 
+this.validateAddTrackRequest = function (requestBody, callback) {
+    var result = null,
+        track = requestBody.track;
+    
+    if (!that.isRequestBaseValid(requestBody.requestBase)) {
+        result = operationResults.invalidRequest;
+    }
+    else if (!track.id || track.id === undefined) {
+        result = operationResults.trackOps.idEmpty;
+    }
+    else if (!track.name || track.name === undefined) {
+        result = operationResults.trackOps.nameEmpty;
+    }
+    callback(result);
+};
+
 this.validateAlbumObject = function (album, callback) {
     var result = null;
     if (!album.id | album.id === undefined) {

@@ -205,7 +205,7 @@ module.exports = {
                     if (track) {
                         if (track.id === newTrack.id) {
                             callback({
-                                result: operationResults.TrackOps.addTrackIdAlreadyExists
+                                result: operationResults.trackOps.addTrackIdAlreadyExists
                             });
                             return;
                         }
@@ -235,7 +235,13 @@ module.exports = {
                             });
                             return;
                         } 
-
+                        
+                        if (!album) {
+                            callback({
+                                result: operationResults.trackOps.albumNotPresentInDb
+                            });
+                            return;
+                        }
                         callback(null, album);
                     });
             }
@@ -266,8 +272,8 @@ module.exports = {
          * Task execution flow
          */
         async.waterfall([
-            async.constant(request.body.requestBase),
-            requestValidations.validateRequestBase,
+            async.constant(request.body),
+            requestValidations.validateAddTrackRequest,
             checkIfTrackExists,
             findAssociatedAlbum,
             executeAddTrack
