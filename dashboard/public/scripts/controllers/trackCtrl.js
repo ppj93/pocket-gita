@@ -34,6 +34,9 @@
             if (that.action === constants.actions.add) {
                 promise =  trackService.addTrack(track).then(function (response) { 
                     that.message = utilityService.constructMessageObject(constants.messageTypes.success, "Added successfully");
+                    delete that.track;
+                    $state.go('manageTracksState.list');
+
                 }, function (error) { 
                     that.message = utilityService.constructMessageObject(constants.messageTypes.error, error.message);
                 });
@@ -41,16 +44,13 @@
             else {
                 promise = trackService.editTrack(track).then(function (response) { 
                     that.message = utilityService.constructMessageObject(constants.messageTypes.success, 'Edited track successfully');
+                    delete that.track;
+                    $state.go('manageTracksState.list');
+
                 }, function (error) {
                     that.message = utilityService.constructMessageObject(constants.messageTypes.error, error);
                 });
             }
-
-            promise.finally(function () { 
-                /** Delete track variable used to store the temporary track object */
-                delete that.track;
-                $state.go('manageTracksState.list');
-            });
         };
             
         this.setupAddOrEditTrack = function (action, track) {

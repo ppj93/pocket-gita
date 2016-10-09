@@ -34,6 +34,8 @@
             if (that.action === constants.actions.add) {
                 promise =  albumService.addAlbum(album).then(function (response) { 
                     that.message = utilityService.constructMessageObject(constants.messageTypes.success, "Added successfully");
+                    delete that.album;
+                    $state.go('manageAlbumsState.list');
                 }, function (error) { 
                     that.message = utilityService.constructMessageObject(constants.messageTypes.error, error.message);
                 });
@@ -41,16 +43,12 @@
             else {
                 promise = albumService.editAlbum(album).then(function (response) { 
                     that.message = utilityService.constructMessageObject(constants.messageTypes.success, 'Edited album successfully');
+                    delete that.album;
+                    $state.go('manageAlbumsState.list');
                 }, function (error) {
                     that.message = utilityService.constructMessageObject(constants.messageTypes.error, error);
                 });
             }
-
-            promise.finally(function () { 
-                /** Delete album variable used to store the temporary album object */
-                delete that.album;
-                $state.go('manageAlbumsState.list');
-            });
         };
             
         this.setupAddOrEditAlbum = function (action, album) {

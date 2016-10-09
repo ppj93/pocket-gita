@@ -191,9 +191,9 @@ module.exports = {
         var newTrack = request.body.track;
         
         var checkIfTrackExists = function (callback) {
-            trackModel.findOne({ $or: [{id: newTrack.id}, { name: newTrack.name }] })
+            trackModel.findOne({ $or: [{id: newTrack.id}, { name: newTrack.name }, {audioUrl: newTrack.audioUrl}] })
                 .lean() //tells Mongoose to skip step of creating full model & directly get a doc
-                .select('id name')
+                .select('id name audioUrl')
                 .exec(function (error, track) { 
                     if (error) {
                         callback({
@@ -202,19 +202,24 @@ module.exports = {
                         return;
                     }
 
+                    var outResult;
                     if (track) {
                         if (track.id === newTrack.id) {
-                            callback({
-                                result: operationResults.trackOps.addTrackIdAlreadyExists
-                            });
-                            return;
+                            outResult = operationResults.trackOps.addTrackIdAlreadyExists;
                         }
                         else if (track.name === newTrack.name) {
-                            callback({
-                                result: operationResults.trackOps.addTrackNameAlreadyExists
-                            });
-                            return;
+                            outResult = operationResults.trackOps.addTrackNameAlreadyExists;
                         }
+                        //TODO: add this check & corresponding search feature using audioUrl
+                        else if (track.audioUrl === newTrack.audioUrl) {
+                            outResult = _.clone(operationResults.trackOps.addTrackAudioUrlAlreadyExists);
+                            outResult.error = {trackId: track.id};
+                        }
+
+                        callback({
+                            result: outResult
+                        });
+                        return;
                     }
                     callback(null);
                 });
@@ -222,7 +227,7 @@ module.exports = {
         
         var findAssociatedAlbum = function (callback) {
             if (!newTrack.albumId) {
-                callback(null);
+                callback(null, null);
             }
             else {
                 albumModel.findOne({ id: newTrack.albumId })
@@ -251,9 +256,13 @@ module.exports = {
             var newTrackModel = new trackModel({
                 id: newTrack.id,
                 name: newTrack.name,
-                album: album,
                 audioUrl: newTrack.audioUrl
             });
+
+            if (album) {
+                newTrackModel.album = album;
+            }
+
             newTrackModel.save(function (error) {
                 if (error) {
                     callback({

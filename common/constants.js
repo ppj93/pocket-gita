@@ -73,7 +73,10 @@ exports.operationResults = {
         addTrackIdAlreadyExists: {
             code: 'ER_15',
             message: 'Track Id being added already exists. Contact dev team.'
+        },
+        addTrackAudioUrlAlreadyExists: {
+            code: 'ER_1',
+            message: 'Audio Url you are trying to associate with Track is already associated with another Track.'
         }
-
     }
 };
