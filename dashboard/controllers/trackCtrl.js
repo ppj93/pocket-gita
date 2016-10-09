@@ -115,9 +115,32 @@ module.exports = {
                 });
         };
 
+        var checkForDuplicateAudioUrl = function (extras, callback) {
+            if (!editTrack.audioUrl) {
+                callback(null, extras);
+                return;
+            }
+            
+            trackModel.findOne({ id: { $ne: editTrack.id }, audioUrl: editTrack.audioUrl })
+                .exec(function (error, track) {
+                    var outResult = null;
+                    if (error) {
+                        outResult = operationResults.dbOperationFailed;
+                    }
+                    else if (track) {
+                        outResult = operationResults.trackOps.addTrackAudioUrlAlreadyExists;
+                    }
+                    
+                    if (outResult) {
+                        callback({ result: outResult });
+                    } else {
+                        callback(null, extras);    
+                    }   
+                });
+        };
         var checkIfAlbumExists = function (extras, callback) {
             if (!editTrack.albumId) {
-                callback(null);
+                callback(null, null, extras);
                 return;
             }
             albumModel.findOne({ id: editTrack.albumId })
@@ -144,10 +167,6 @@ module.exports = {
         var executeEditTrack = function (dbAlbum, extras, callback) {
             var dbTrack = extras.dbTrack;
             for (var field in editTrack) {
-                if (!editTrack[field]) {
-                    continue;
-                }
-
                 if (field === 'album') {
                     if (editTrack[field].albumId !== dbTrack[field].albumId) {
                         dbTrack[field] = dbAlbum;         
@@ -179,6 +198,7 @@ module.exports = {
             async.constant(request.body),
             requestValidations.validateEditTrackRequest,
             checkIfTrackExists,
+            checkForDuplicateAudioUrl,
             checkIfAlbumExists,
             executeEditTrack
         ],
@@ -224,7 +244,7 @@ module.exports = {
                     callback(null);
                 });
         };
-        
+
         var findAssociatedAlbum = function (callback) {
             if (!newTrack.albumId) {
                 callback(null, null);

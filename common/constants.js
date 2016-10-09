@@ -58,6 +58,10 @@ exports.operationResults = {
             code: 'ER_10',
             message: 'Track name is empty. Contact dev team.'
         },
+        audioUrlEmpty: {
+            code: 'ER_10',
+            message: 'Track Audio Url is empty. Contact dev team.'
+        },
         albumNotPresentInDb: {
             code: 'ER_13',
             message: 'The album you have associated with track does not exist in Database. Contact dev team'

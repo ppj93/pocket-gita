@@ -41,6 +41,9 @@ this.validateAddTrackRequest = function (requestBody, callback) {
     else if (!track.name || track.name === undefined) {
         result = operationResults.trackOps.nameEmpty;
     }
+    else if (!track.audioUrl || track.audioUrl === undefined) {
+        result = operationResults.trackOps.audioUrlEmpty;
+    }
     callback(result);
 };
 
