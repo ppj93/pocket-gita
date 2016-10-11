@@ -7,7 +7,7 @@
                 controller = scope[attrs['controller']],    
                 config = controller[attrs['config']];
             
-            $(selector).typeahead(config);
+            element.typeahead(config);
         };
     }]);
 })();
