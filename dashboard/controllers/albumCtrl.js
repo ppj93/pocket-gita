@@ -52,8 +52,39 @@ module.exports = {
         app.post('/addAlbum', this.addAlbum);
         app.post('/editAlbum', this.editAlbum);
         app.post('/searchAlbumByName', this.searchAlbumByName);
+        app.post('/getAlbumDetails', this.getAlbumDetails);
     },
     
+    getAlbumDetails: function (request, response) {
+        var albumId = request.body.id;
+
+        var executeGetAlbumDetails = function (callback) {
+            albumModel.findOne({ id: albumId })
+                .lean()
+                .populate({ path: 'tracks', select: 'id name'})
+                .exec(function (error, dbAlbum) {
+                    if (error) {
+                        callback({
+                            result: operationResults.dbOperationFailed
+                        });
+                        return;
+                    }
+
+                    callback(null, {
+                        result: operationResults.success,
+                        album: dbAlbum 
+                    });
+                });
+        };
+        async.waterfall([
+            async.constant(request.body),
+            requestValidations.validateGetAlbumDetailsRequest,
+            executeGetAlbumDetails
+        ],
+            utilities.getUiJsonResponseSender(response)
+        );
+    },
+
     searchAlbumByName: function (request, response) {
         var searchText = request.body.searchText;
     

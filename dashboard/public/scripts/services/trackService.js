@@ -1,12 +1,17 @@
 (function () { 
     'use strict';
 
-    angular.module('services').factory('trackService', ['constants', 'albumService', '$q', '$http', 'uuidService', 'serviceUrls', 'utilityService', 
-        function (constants, albumService, $q, $http, uuidService, serviceUrls, utilityService) {
+    angular.module('services').factory('trackService', ['_', 'constants', 'albumService', '$q', '$http', 'uuidService', 'serviceUrls', 'utilityService', 
+        function (_, constants, albumService, $q, $http, uuidService, serviceUrls, utilityService) {
         var service = {};
 
-               
+        var cache = utilityService.createNewOrGetExistingCache('albumAndTrackLists');
+
         var populateAlbumIdUsingAlbumName = function (track) {
+            if (!track.album || !track.album.name) {
+                return $q.resolve({});
+            }
+
             return albumService.searchAlbumByNameExactMatch(track.album.name).then(function (album) { 
                 if (!album) {
                     return $q.reject({
@@ -17,11 +22,35 @@
                 track.album.id = album.id;
                 return album;
             }, function (error) {
-                return error;
+                return $q.reject(error);
             });
         };
            
-        service.getTracks = function () {
+        service.searchTrackByNameExactMatch = function (name) {
+            return service.searchTrackByName(name).then(function (tracks) {
+                return _.find(tracks, function (testTrack) { return testTrack.name === name; });
+            }, function (error) { 
+                return error;
+             });  
+        };
+            
+        service.searchTrackByName = function (name) {
+            var nameMatcher = function (testTrack) {
+                return testTrack.name.indexOf(name) >= 0;  
+            };
+
+            return service.getTracks(false).then(function (tracks) { 
+                return _.filter(tracks, nameMatcher);
+            }, function (error) { 
+                return error;
+            });
+        };
+
+        service.getTracks = function (refreshCache) {
+            if (!refreshCache && cache.get('albums')) {
+                return $q.resolve(cache.get('albums'));
+            }
+
             var request = {
                 requestBase: {
                     requestId: uuidService.v1()
@@ -92,6 +121,9 @@
                     },
                     track: track
                 };
+
+                cache.removeAll();
+
                 return $http.post(serviceUrls.editTrack, request).then(function (response) {
                     var data = response.data;
                     /**

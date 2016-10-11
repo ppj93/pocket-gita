@@ -32,6 +32,28 @@
             }, utilityService.handleNetworkError);
         };
             
+        service.getAlbumDetails = function (albumId) {
+            var request = {
+                requestBase: {
+                    requestId: uuidService.v1()
+                },
+                id: albumId
+            };
+            return $http.post(serviceUrls.getAlbumDetails, request).then(function (response) {
+                var data = response.data;
+                /**
+                 * Always use === and !== for comparison. Check google for reason.!
+                 */
+                if (data.result.code !== 0) {
+                    return $q.reject(data.result);
+                }
+
+                return data.album;
+
+            }, utilityService.handleNetworkError);
+
+        };
+            
         service.searchAlbumByNameExactMatch = function (name) {
             return service.searchAlbumByName(name).then(function (albums) {
                 return _.find(albums, function (testAlbum) { return testAlbum.name === name });

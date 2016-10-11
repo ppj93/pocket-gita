@@ -24,7 +24,7 @@
             if (!$cacheFactory.get(cacheId)) {
                 return $cacheFactory(cacheId);
             } 
-            return $cacheFactory(cacheId);
+            return $cacheFactory.get(cacheId);
         };
 
         return service;
