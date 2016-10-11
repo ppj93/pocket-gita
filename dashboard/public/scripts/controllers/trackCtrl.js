@@ -29,6 +29,7 @@
             $state.go('manageTracksState.list');
         };
 
+
         this.searchAlbumByName = function (query, aSyncResults) {
             albumService.searchAlbumByName(query).then(function (albums) {
                 aSyncResults(albums);
@@ -76,13 +77,21 @@
             if (that.action === constants.actions.add) {
                 that.track = {
                     id: uuidService.v1()
-                };    
+                }; 
+                $state.go('manageTracksState.trackDetails', { id: that.track.id });c
             }      
             else if (that.action === constants.actions.edit) {
-                that.track = track;
+                trackService.getTrackDetails(track.id).then(function (track) { 
+                    that.track = track;
+                    if (!that.track.album) {
+                        that.track.album = {};
+                    }
+                    $state.go('manageTracksState.trackDetails', { id: that.track.id });
+                },
+                function (error) { 
+                    that.message = utilityService.constructMessageObject(constants.messageTypes.error, error.message);
+                });
             }
-            
-            $state.go('manageTracksState.trackDetails', { id: that.track.id });
         };
 
         /** Start execution here */

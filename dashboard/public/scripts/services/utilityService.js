@@ -8,9 +8,9 @@
             /**
              * TODO: DO logging here
              */
-            return {
+            return $q.reject({
                 message: "Network error occurred."
-            };
+            });
         };
 
         service.constructMessageObject = function (type, text) {

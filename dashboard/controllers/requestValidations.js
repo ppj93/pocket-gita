@@ -36,6 +36,8 @@ this.validateEditTrackRequest = function (requestBody, callback) {
     else if (!track.name || track.name === undefined) {
         result = operationResults.trackOps.nameEmpty;
     }
+    
+    //TODO: add audioUrl existance validation
     callback(result);
 };
 

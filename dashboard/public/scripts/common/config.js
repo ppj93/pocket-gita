@@ -10,6 +10,7 @@
             getTracks: "/getTracks",
             addTrack: "/addTrack",
             editTrack: "/editTrack",
+            getTrackDetails: 'getTrackDetails',
             deleteTrack: "/deleteTrack"
         })
         .config(['$interpolateProvider', function ($interpolateProvider) { 

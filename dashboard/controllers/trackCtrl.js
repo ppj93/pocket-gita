@@ -24,7 +24,7 @@ module.exports = {
         var executeGetTrackDetails = function (callback) {
             trackModel.findOne({ id: trackId })
                 .lean()
-                .populate('album.id album.name')
+                .populate({ path: 'album', select: 'id name'})
                 .exec(function (error, dbTrack) {
                     if (error) {
                         callback({
@@ -108,7 +108,7 @@ module.exports = {
                 });
         };
 
-        /**Always write below line after defining functions you want to use. Else functions will come as undefined */
+        /**Always wr0ite below line after defining functions you want to use. Else functions will come as undefined */
         async.waterfall([
             async.constant(request.body.requestBase),
             requestValidations.validateRequestBase,
@@ -170,11 +170,11 @@ module.exports = {
                 });
         };
         var checkIfAlbumExists = function (extras, callback) {
-            if (!editTrack.albumId) {
+            if (!editTrack.album || !editTrack.album.id) {
                 callback(null, null, extras);
                 return;
             }
-            albumModel.findOne({ id: editTrack.albumId })
+            albumModel.findOne({ id: editTrack.album.id })
                 .lean()
                 .select('_id id')
                 .exec(function (error, album) {
@@ -198,8 +198,12 @@ module.exports = {
         var executeEditTrack = function (dbAlbum, extras, callback) {
             var dbTrack = extras.dbTrack;
             for (var field in trackModel.schema.paths) {
+                if (['_id', '__v'].indexOf(field) >= 0) {
+                    continue;
+                }
+                
                 if (field === 'album') {
-                    if (editTrack[field].albumId !== dbTrack[field].id) {
+                    if (!dbTrack[field] || !editTrack[field] || editTrack[field].id !== dbTrack[field].id) {
                         dbTrack[field] = dbAlbum;         
                     }
                 }

@@ -7,14 +7,14 @@
 
                
         var populateAlbumIdUsingAlbumName = function (track) {
-            return albumService.searchAlbumByNameExactMatch(track.albumName).then(function (album) { 
+            return albumService.searchAlbumByNameExactMatch(track.album.name).then(function (album) { 
                 if (!album) {
                     return $q.reject({
                         message: constants.messages.albumNotFoundInDb
                     });
                 }
 
-                track.albumId = album.id;
+                track.album.id = album.id;
                 return album;
             }, function (error) {
                 return error;
@@ -61,6 +61,27 @@
 
             }, utilityService.handleNetworkError);
   
+        };
+            
+        service.getTrackDetails = function (id) {
+            var request = {
+                requestBase: {
+                    requestId: uuidService.v1()
+                },
+                id: id
+            };
+            return $http.post(serviceUrls.getTrackDetails, request).then(function (response) {
+                var data = response.data;
+                /**
+                 * Always use === and !== for comparison. Check google for reason.!
+                 */
+                if (data.result.code !== 0) {
+                    return $q.reject(data.result);
+                }
+
+                return data.track;
+
+            }, utilityService.handleNetworkError);
         };
             
         service.editTrack = function (track) {
