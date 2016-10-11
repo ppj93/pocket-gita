@@ -87,7 +87,9 @@
 
             return populateAlbumIdUsingAlbumName(track)
                 .then(executeEditTrack,
-                function (error) { return error; }
+                function (error) {
+                    return $q.reject(error);
+                }
             );
 
         };
