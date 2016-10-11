@@ -61,6 +61,13 @@
             }
         };
             
+        this.albumNameTypeaheadConfig = {
+            name: 'vaguaename',
+            source: that.searchAlbumByName,
+            displayText: function (album) { return album.name; },
+            async: true
+        };
+            
         this.setupAddOrEditTrack = function (action, track) {
             that.action = action;
             that.fieldsInEditMode = true;
@@ -75,26 +82,7 @@
                 that.track = track;
             }
             
-
-            $scope.$on('$viewContentLoaded',
-                function (event) {
-                    $timeout(function () {
-                        if ($('#albumName').length === 0) { console.log("0000"); }
-                    
-                        else $('#albumName').typeahead({
-                        name: 'vaguaename',
-                        source: that.searchAlbumByName,
-                        displayText: function (album) { return album.name; },
-                        async: true
-                    });
-                     }, 0);
-                    
-
-                });
             $state.go('manageTracksState.trackDetails', { id: that.track.id });
-
-
-            
         };
 
         /** Start execution here */

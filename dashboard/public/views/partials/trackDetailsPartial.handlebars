@@ -13,7 +13,7 @@
     <div class="form-group">
         <label for="name" class="col-sm-2 control-label">Album: </label>
         <div class="col-sm-10">
-            <input id="albumName" ng-if="trkCtrl.fieldsInEditMode" autocomplete="off" spellcheck="false" type="text" class="form-control" ng-model="trkCtrl.track.albumId">
+            <input id="albumName" ng-if="trkCtrl.fieldsInEditMode" typeahead selector="#albumName" controller="trkCtrl" config="albumNameTypeaheadConfig" autocomplete="off" spellcheck="false" type="text" class="form-control" ng-model="trkCtrl.track.albumId">
             <span ng-if="!trkCtrl.fieldsInEditMode">{[trkCtrl.track.albumName]}</span>
         </div>
     </div>
