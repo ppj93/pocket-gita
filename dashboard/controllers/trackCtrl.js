@@ -15,8 +15,39 @@ module.exports = {
         app.post('/addTrack', this.addTrack);
         app.post('/editTrack', this.editTrack);
         app.post('/searchTrackByName', this.searchTrackByName);
+        app.post('/getTrackDetails', this.getTrackDetails);
     },
     
+    getTrackDetails: function (request, response) {
+        var trackId = request.body.id;
+
+        var executeGetTrackDetails = function (callback) {
+            trackModel.findOne({ id: trackId })
+                .lean()
+                .populate('album.id album.name')
+                .exec(function (error, dbTrack) {
+                    if (error) {
+                        callback({
+                            result: operationResults.dbOperationFailed
+                        });
+                        return;
+                    }
+
+                    callback(null, {
+                        result: operationResults.success,
+                        track: dbTrack 
+                    });
+                });
+        };
+        async.waterfall([
+            async.constant(request.body),
+            requestValidations.validateGetTrackDetailsRequest,
+            executeGetTrackDetails
+        ],
+            utilities.getUiJsonResponseSender(response)
+        );
+    },
+
     searchTrackByName: function (request, response) {
         var searchText = request.body.searchText;
     
@@ -166,9 +197,9 @@ module.exports = {
         };        
         var executeEditTrack = function (dbAlbum, extras, callback) {
             var dbTrack = extras.dbTrack;
-            for (var field in editTrack) {
+            for (var field in trackModel.schema.paths) {
                 if (field === 'album') {
-                    if (editTrack[field].albumId !== dbTrack[field].albumId) {
+                    if (editTrack[field].albumId !== dbTrack[field].id) {
                         dbTrack[field] = dbAlbum;         
                     }
                 }

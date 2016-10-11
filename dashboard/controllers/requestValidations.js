@@ -11,6 +11,17 @@ this.isRequestBaseValid = function (requestBase) {
     return requestBase && requestBase.requestId;
 };
 
+this.validateGetTrackDetailsRequest = function (requestBody, callback) {
+    var result = null;
+    if (!that.isRequestBaseValid(requestBody.requestBase)) {
+        result = operationResults.invalidRequest;
+    }
+    else if (!requestBody.id) {
+        result = operationResults.trackOps.idEmpty;
+    }
+
+    callback(result);
+};
 /*TODO: rename invalidRequest to invalidRequestBase */
 this.validateEditTrackRequest = function (requestBody, callback) {
     var result = null,
