@@ -6,8 +6,8 @@
 (function () {
     'use strict';
 
-    angular.module('controllers').controller('trackCtrl', ['utilityService', 'constants', 'albumService',
-        'trackService', '$state', 'uuidService', function (utilityService, constants, albumService, trackService, $state, uuidService) {
+    angular.module('controllers').controller('trackCtrl', ['$timeout', '$scope', 'utilityService', 'constants', 'albumService',
+        'trackService', '$state', 'uuidService', function ($timeout, $scope, utilityService, constants, albumService, trackService, $state, uuidService) {
         var that = this;
 
         this.constants = constants;
@@ -29,6 +29,14 @@
             $state.go('manageTracksState.list');
         };
 
+        this.searchAlbumByName = function (query, aSyncResults) {
+            albumService.searchAlbumByName(query).then(function (albums) {
+                aSyncResults(albums);
+            }, function (error) { 
+                that.message = utilityService.constructMessageObject(constants.messageTypes.error, error.message);
+            });
+        };   
+            
         this.submitAddOrEditTrack = function (track) {
             var promise;
             if (that.action === constants.actions.add) {
@@ -67,7 +75,26 @@
                 that.track = track;
             }
             
+
+            $scope.$on('$viewContentLoaded',
+                function (event) {
+                    $timeout(function () {
+                        if ($('#albumName').length === 0) { console.log("0000"); }
+                    
+                        else $('#albumName').typeahead({
+                        name: 'vaguaename',
+                        source: that.searchAlbumByName,
+                        displayText: function (album) { return album.name; },
+                        async: true
+                    });
+                     }, 0);
+                    
+
+                });
             $state.go('manageTracksState.trackDetails', { id: that.track.id });
+
+
+            
         };
 
         /** Start execution here */

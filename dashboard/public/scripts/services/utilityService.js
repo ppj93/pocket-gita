@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('services').factory('utilityService', ['$q', function ($q) { 
+    angular.module('services').factory('utilityService', ['$q', '$cacheFactory', function ($q, $cacheFactory) { 
         var service = {};
 
         service.handleNetworkError = function (error) {
@@ -19,6 +19,14 @@
                 text: text
             };
         };
+
+        service.createNewOrGetExistingCache = function (cacheId) {
+            if (!$cacheFactory.get(cacheId)) {
+                return $cacheFactory(cacheId);
+            } 
+            return $cacheFactory(cacheId);
+        };
+
         return service;
     }]);
 })();

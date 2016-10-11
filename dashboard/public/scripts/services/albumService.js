@@ -1,12 +1,18 @@
 (function () { 
     'use strict';
 
-    angular.module('services').factory('albumService', ['$q', '$http', 'uuidService', 'serviceUrls', 'utilityService', 
-        function ($q, $http, uuidService, serviceUrls, utilityService) {
+    angular.module('services').factory('albumService', ['_', '$q', '$http', 'uuidService', 'serviceUrls', 'utilityService', 
+        function (_, $q, $http, uuidService, serviceUrls, utilityService) {
         var service = {};
 
+        var cache = utilityService.createNewOrGetExistingCache('albumAndTrackLists');
         
-        service.getAlbums = function () {
+
+        service.getAlbums = function (refreshCache) {
+            if (!refreshCache && cache.get('albums')) {
+                return $q.resolve(cache.get('albums'));
+            }
+
             var request = {
                 requestBase: {
                     requestId: uuidService.v1()
@@ -21,11 +27,27 @@
                     return $q.reject(data.result);
                 }
 
+                cache.put('albums', data.albums);
                 return data.albums;
 
             }, utilityService.handleNetworkError);
         };
             
+        service.searchAlbumByName = function (name) {
+            var nameMatcher = function (testAlbum) {
+                return testAlbum.name.indexOf(name) >= 0;  
+            };
+            
+            if (cache.get('albums')) {
+                return $q.resolve(_.filter(cache.get('albums'), nameMatcher));
+            }
+
+            return service.getAlbums(true).then(function (albums) { 
+                return _.filter(albums, nameMatcher);
+            }, function (error) { 
+                return error;
+            });
+        };
         service.addAlbum = function (album) {
             var request = {
                 requestBase: {
@@ -55,6 +77,9 @@
                 },
                 album: album
             };
+
+            cache.removeAll();
+
             return $http.post(serviceUrls.editAlbum, request).then(function (response) {
                 var data = response.data;
                 /**
