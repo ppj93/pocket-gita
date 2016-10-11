@@ -1,11 +1,26 @@
 (function () { 
     'use strict';
 
-    angular.module('services').factory('trackService', ['$q', '$http', 'uuidService', 'serviceUrls', 'utilityService', 
-        function ($q, $http, uuidService, serviceUrls, utilityService) {
+    angular.module('services').factory('trackService', ['constants', 'albumService', '$q', '$http', 'uuidService', 'serviceUrls', 'utilityService', 
+        function (constants, albumService, $q, $http, uuidService, serviceUrls, utilityService) {
         var service = {};
 
-        
+               
+        var populateAlbumIdUsingAlbumName = function (track) {
+            return albumService.searchAlbumByNameExactMatch(track.albumName).then(function (album) { 
+                if (!album) {
+                    return $q.reject({
+                        message: constants.messages.albumNotFoundInDb
+                    });
+                }
+
+                track.albumId = album.id;
+                return album;
+            }, function (error) {
+                return error;
+            });
+        };
+           
         service.getTracks = function () {
             var request = {
                 requestBase: {
@@ -49,25 +64,32 @@
         };
             
         service.editTrack = function (track) {
-            var request = {
-                requestBase: {
-                    requestId: uuidService.v1()
-                },
-                track: track
+            var executeEditTrack = function () {
+                var request = {
+                    requestBase: {
+                        requestId: uuidService.v1()
+                    },
+                    track: track
+                };
+                return $http.post(serviceUrls.editTrack, request).then(function (response) {
+                    var data = response.data;
+                    /**
+                     * Always use === and !== for comparison. Check google for reason.!
+                     */
+                    if (data.result.code !== 0) {
+                        return $q.reject(data.result);
+                    }
+
+                    return;
+
+                }, utilityService.handleNetworkError);
             };
-            return $http.post(serviceUrls.editTrack, request).then(function (response) {
-                var data = response.data;
-                /**
-                 * Always use === and !== for comparison. Check google for reason.!
-                 */
-                if (data.result.code !== 0) {
-                    return $q.reject(data.result);
-                }
 
-                return;
+            return populateAlbumIdUsingAlbumName(track)
+                .then(executeEditTrack,
+                function (error) { return error; }
+            );
 
-            }, utilityService.handleNetworkError);
-  
         };
   
         return service;

@@ -56,7 +56,7 @@
                     $state.go('manageTracksState.list');
 
                 }, function (error) {
-                    that.message = utilityService.constructMessageObject(constants.messageTypes.error, error);
+                    that.message = utilityService.constructMessageObject(constants.messageTypes.error, error.message);
                 });
             }
         };

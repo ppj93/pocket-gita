@@ -9,6 +9,9 @@
             actions: {
                 add: 'add',
                 edit: 'edit'
+            },
+            messages: {
+                albumNotFoundInDb: 'Album name you have entered does not exist. Please search for album name & select from available options.'
             }
         })
 })();

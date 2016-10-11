@@ -1,13 +1,12 @@
 (function () { 
     'use strict';
 
-    angular.module('services').factory('albumService', ['_', '$q', '$http', 'uuidService', 'serviceUrls', 'utilityService', 
-        function (_, $q, $http, uuidService, serviceUrls, utilityService) {
+    angular.module('services').factory('albumService', ['_', 'constants', '$q', '$http', 'uuidService', 'serviceUrls', 'utilityService', 
+        function (_, constants, $q, $http, uuidService, serviceUrls, utilityService) {
         var service = {};
 
         var cache = utilityService.createNewOrGetExistingCache('albumAndTrackLists');
         
-
         service.getAlbums = function (refreshCache) {
             if (!refreshCache && cache.get('albums')) {
                 return $q.resolve(cache.get('albums'));
@@ -33,21 +32,25 @@
             }, utilityService.handleNetworkError);
         };
             
+        service.searchAlbumByNameExactMatch = function (name) {
+            return service.searchAlbumByName(name).then(function (albums) {
+                return _.find(albums, function (testAlbum) { return testAlbum.name === name });
+            }, function (error) { 
+                return error;
+             });  
+        };
         service.searchAlbumByName = function (name) {
             var nameMatcher = function (testAlbum) {
                 return testAlbum.name.indexOf(name) >= 0;  
             };
-            
-            if (cache.get('albums')) {
-                return $q.resolve(_.filter(cache.get('albums'), nameMatcher));
-            }
 
-            return service.getAlbums(true).then(function (albums) { 
+            return service.getAlbums(false).then(function (albums) { 
                 return _.filter(albums, nameMatcher);
             }, function (error) { 
                 return error;
             });
         };
+      
         service.addAlbum = function (album) {
             var request = {
                 requestBase: {
