@@ -38,7 +38,7 @@
             <br>
             <input id="track" ng-if="albCtrl.fieldsInEditMode" 
             typeahead controller="albCtrl" config="trackNameTypeaheadConfig" 
-            autocomplete="off" spellcheck="false" type="text" class="form-control" ng-model="albCtrl.addAlbumTrackId">
+            autocomplete="off" spellcheck="false" type="text" class="form-control" ng-model="albCtrl.addAlbumTrackName">
 
         </div>
     </div>
@@ -47,7 +47,7 @@
         <label for="thumbnailUrl" class="col-sm-2 control-label">Description: </label>
         <div class="col-sm-10">
             <textarea ng-if="albCtrl.fieldsInEditMode" class="form-control" ng-model="albCtrl.album.description" rows="4"></textarea>
-            <span ng-if="albCtrl.fieldsInEditMode">{[albCtrl.album.description]}</span>
+            <span ng-if="!albCtrl.fieldsInEditMode">{[albCtrl.album.description]}</span>
         </div>
     </div>
 

@@ -35,6 +35,8 @@
             if (!index) {
                 that.album.tracks.push(track);
             }
+
+            delete that.addAlbumTrackName;
         };
             
         this.trackNameTypeaheadConfig = {

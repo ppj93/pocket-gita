@@ -74,6 +74,8 @@
         };
       
         service.addAlbum = function (album) {
+            cache.removeAll();
+            
             var request = {
                 requestBase: {
                     requestId: uuidService.v1()

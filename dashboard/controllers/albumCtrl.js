@@ -10,12 +10,14 @@ var operationResults = require('../../common/constants').operationResults,
     trackModel = require('../models/track');
 
 var getTrackIds = function (newAlbum, extras, callback) {
-    if (!newAlbum.trackIds || newAlbum.trackIds.length === 0) {
+    if (!newAlbum.tracks || newAlbum.tracks.length === 0) {
         callback(null, newAlbum, [], extras);
         return; 
     }
 
-    trackModel.find({ id: { $in: newAlbum.trackIds } })
+    var trackIds = _.map(newAlbum.tracks, function (track) { return track.id; })
+    
+    trackModel.find({ id: { $in: trackIds } })
         .lean()
         .select('_id id')
         .exec(function (error, tracks) {
@@ -32,8 +34,10 @@ var getTrackIds = function (newAlbum, extras, callback) {
         
 var checkTrackIdValidity = function (newAlbum, tracks, extras, callback) {
     var foundErroneousTrackId = false;
-    _.each(newAlbum.trackIds, function (trackId) {
-        if (!_.some(tracks, function (track) { return track.id === trackId; })) {
+    
+    _.each(newAlbum.tracks, function (trackFromAlbum) {
+        var trackIdFromAlbum = trackFromAlbum.id;
+        if (!_.some(tracks, function (track) { return track.id === trackIdFromAlbum; })) {
             foundErroneousTrackId = true;
             callback({
                 result: operationResults.albumOps.trackIdBeingAddedNotFound

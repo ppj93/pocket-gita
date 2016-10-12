@@ -17,7 +17,7 @@
         };
 
         this.getTracks = function () { 
-            trackService.getTracks().then(function (tracks) { 
+            trackService.getTracks(true).then(function (tracks) { 
                 that.tracks = tracks;
             }, function (error) { 
                 that.message = utilityService.constructMessageObject(constants.messageTypes.error, error.message);

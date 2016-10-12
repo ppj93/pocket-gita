@@ -47,8 +47,8 @@
         };
 
         service.getTracks = function (refreshCache) {
-            if (!refreshCache && cache.get('albums')) {
-                return $q.resolve(cache.get('albums'));
+            if (!refreshCache && cache.get('tracks')) {
+                return $q.resolve(cache.get('tracks'));
             }
 
             var request = {
@@ -65,12 +65,15 @@
                     return $q.reject(data.result);
                 }
 
+                cache.put('tracks', data.tracks);                
                 return data.tracks;
 
             }, utilityService.handleNetworkError);
         };
             
         service.addTrack = function (track) {
+            cache.removeAll();
+
             var request = {
                 requestBase: {
                     requestId: uuidService.v1()
@@ -114,6 +117,8 @@
         };
             
         service.editTrack = function (track) {
+            cache.removeAll();
+
             var executeEditTrack = function () {
                 var request = {
                     requestBase: {
@@ -121,8 +126,6 @@
                     },
                     track: track
                 };
-
-                cache.removeAll();
 
                 return $http.post(serviceUrls.editTrack, request).then(function (response) {
                     var data = response.data;
