@@ -26,6 +26,8 @@
     "mongoose": "^4.6.0",
     "node-uuid": "^1.4.7",
     "normalize.css": "^4.2.0",
+    "passport": "^0.3.2",
+    "passport-google-oauth2": "^0.1.6",
     "underscore": "^1.8.3",
     "vhost": "^3.0.2"
   }

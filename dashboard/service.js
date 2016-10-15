@@ -8,7 +8,12 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     _ = require('underscore'),
     albumCtrl = require('./controllers/albumCtrl'),
-    trackCtrl = require('./controllers/trackCtrl');
+    trackCtrl = require('./controllers/trackCtrl'),
+    passport = require('passport'),
+    GoogleStrategy   = require( 'passport-google-oauth2' ).Strategy;
+
+var GOOGLE_CLIENT_ID      = "41242017152-a5jlf53g0iasia2sq37mmk52ja944r43.apps.googleusercontent.com"
+  , GOOGLE_CLIENT_SECRET  = "-4OoXlnDG1V4dx1GNltb2qUP";
 
 app.set('port', config.appConfig.port);
 
@@ -62,5 +67,51 @@ app.use(function(req,res,next){
         next();
     }
 });
+
+passport.use(new GoogleStrategy({
+    clientID:     GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
+    //NOTE :
+    //Carefull ! and avoid usage of Private IP, otherwise you will get the device_id device_name issue for Private IP during authentication
+    //The workaround is to set up thru the google cloud console a fully qualified domain name such as http://mydomain:3000/ 
+    //then edit your /etc/hosts local file to point on your private IP. 
+    //Also both sign-in button + callbackURL has to be share the same url, otherwise two cookies will be created and lead to lost your session
+    //if you use it.
+    callbackURL: "http://admin.pocketgita1.com:9000/auth",
+    passReqToCallback   : true
+  },
+  function(request, accessToken, refreshToken, profile, done) {
+    // asynchronous verification, for effect...
+    process.nextTick(function () {
+      
+        console.log(profile);
+      // To keep the example simple, the user's Google profile is returned to
+      // represent the logged-in user.  In a typical application, you would want
+      // to associate the Google account with a user record in your database,
+      // and return that user instead.
+      return done(null, profile);
+    });
+  }
+));
+
+app.use(passport.initialize());
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+
+app.get('/auth', 
+    	passport.authenticate( 'google', { 
+    		successRedirect: '/',
+    		failureRedirect: '/login'
+    }));
+
+app.get('/google', passport.authenticate('google', { scope: [
+       'email', 'profile'] 
+}));
 
 exports.app = app;

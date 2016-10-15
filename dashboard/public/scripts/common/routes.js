@@ -2,6 +2,10 @@
     'use strict';
     angular.module('config').config(function ($stateProvider, $locationProvider, $urlRouterProvider) {    
         $stateProvider
+            .state('login', {
+                url: '/google',
+                templateUrl: 'google'
+            })
             .state('manageAlbumsState', {
                 url: '/albums',
                 templateUrl: 'manageAlbumsPartial',
