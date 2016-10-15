@@ -9,9 +9,11 @@ var operationResults = require('../../common/constants').operationResults,
     utilities = require('../../common/utilities'),
     trackModel = require('../models/track');
 
-var getTrackIds = function (newAlbum, extras, callback) {
+var getTrackIds = function (params, callback) {
+    var newAlbum = params.album;
+
     if (!newAlbum.tracks || newAlbum.tracks.length === 0) {
-        callback(null, newAlbum, [], extras);
+        callback(null, newAlbum, [], params);
         return; 
     }
 
@@ -27,13 +29,16 @@ var getTrackIds = function (newAlbum, extras, callback) {
                 });
                 return;
             }
-
-            callback(null, newAlbum, tracks, extras);
+            
+            params.tracks = tracks;
+            callback(null, params);
         });
 };
         
-var checkTrackIdValidity = function (newAlbum, tracks, extras, callback) {
-    var foundErroneousTrackId = false;
+var checkTrackIdValidity = function (params, callback) {
+    var newAlbum = params.album,
+        tracks = params.tracks,
+        foundErroneousTrackId = false;
     
     _.each(newAlbum.tracks, function (trackFromAlbum) {
         var trackIdFromAlbum = trackFromAlbum.id;
@@ -46,7 +51,7 @@ var checkTrackIdValidity = function (newAlbum, tracks, extras, callback) {
     });
 
     if (!foundErroneousTrackId) {
-        callback(null, newAlbum, tracks, extras);
+        callback(null, params);
     }
 };
 
@@ -62,7 +67,7 @@ module.exports = {
     getAlbumDetails: function (request, response) {
         var albumId = request.body.id;
 
-        var executeGetAlbumDetails = function (callback) {
+        var executeGetAlbumDetails = function (params, callback) {
             albumModel.findOne({ id: albumId })
                 .lean()
                 .populate({ path: 'tracks', select: 'id name'})
@@ -81,7 +86,8 @@ module.exports = {
                 });
         };
         async.waterfall([
-            async.constant(request.body),
+            async.constant({requestBody: request.body}),
+            utilities.checkIfUserIsAuthorized,
             requestValidations.validateGetAlbumDetailsRequest,
             executeGetAlbumDetails
         ],
@@ -92,7 +98,7 @@ module.exports = {
     searchAlbumByName: function (request, response) {
         var searchText = request.body.searchText;
     
-        var getResultAlbums = function (callback) {
+        var getResultAlbums = function (extras, callback) {
             albumModel.find({ $text: { $search: searchText } })
                 .lean()
                 .select('id name')
@@ -112,6 +118,9 @@ module.exports = {
 
         /**Always write below line after defining functions you want to use. Else functions will come as undefined */
         async.waterfall([
+            async.constant({ requestBase: request.body.requestBase}),
+            utilities.checkIfUserIsAuthorized,
+            utilities.validateRequestBase,
             getResultAlbums
         ],
             utilities.getUiJsonResponseSender(response)
@@ -121,20 +130,13 @@ module.exports = {
 
     getAlbums: function (request, response) {
         var reqBody = request.body;
-
-        if (!requestValidations.isRequestBaseValid(reqBody.requestBase)) {
-            response.json({
-                result: operationResults.invalidRequest
-            });
-            return;
-        }
         
         //TODO: implement pagination!!
         var pageSize = reqBody.pageSize || appConfig.pageSize;
         var pageNumber = reqBody.pageNumber || 1;
         
 
-        var execGetAlbums = function (callback) {
+        var execGetAlbums = function (params, callback) {
             /**We are connected to db. ready to fetch albums */
             albumModel.find({})
                 .lean()
@@ -164,6 +166,9 @@ module.exports = {
 
         /**Always write below line after defining functions you want to use. Else functions will come as undefined */
         async.waterfall([
+            async.constant({requestBase: request.body.requestBase}),
+            utilities.checkIfUserIsAuthorized,
+            utilities.validateRequestBase,
             execGetAlbums
         ],
             utilities.getUiJsonResponseSender(response)
@@ -174,14 +179,7 @@ module.exports = {
     editAlbum: function (request, response) {
         var album = request.body.album;
 
-        if (!requestValidations.isAddAlbumRequestValid(request.body)) {
-            response.json({
-                result: operationResults.invalidRequest
-            });
-            return;
-        }
-
-        var checkIfAlbumExists = function (callback) {
+        var checkIfAlbumExists = function (params, callback) {
             albumModel.find({ id: album.id })
                     
                 .exec(function (error, albums) { 
@@ -199,12 +197,14 @@ module.exports = {
                         return;
                     }
 
-                    callback(null, album, albums[0]);
+                    params.dbAlbum = albums[0];                    
+                    callback(null, params);
                 });
         };
 
-        var executeEditAlbum = function (nAlbum, tracks, dbAlbum, callback) {
-            album.tracks = tracks;
+        var executeEditAlbum = function (params, callback) {
+            var dbAlbum = params.dbAlbum;
+            album.tracks = params.tracks;
             for (var field in album) {
                 if (field === 'tracks' || album[field] !== dbAlbum[field]) {//field value has changed
                     dbAlbum[field] = album[field];
@@ -225,6 +225,9 @@ module.exports = {
         };
 
         async.waterfall([
+            async.constant({requestBody: request.body, album: album}),
+            utilities.checkIfUserIsAuthorized,
+            utilities.validateEditAlbumRequest,
             checkIfAlbumExists,
             getTrackIds,
             checkTrackIdValidity,
@@ -238,14 +241,7 @@ module.exports = {
     addAlbum: function (request, response) {
         var newAlbum = request.body.album;
         
-        if (!requestValidations.isAddAlbumRequestValid(request.body)) {
-            response.json({
-                result: operationResults.invalidRequest
-            });
-            return;
-        }
-
-        var checkIfAlbumExists = function (callback) {
+        var checkIfAlbumExists = function (params, callback) {
             albumModel.find({ $or: [{id: newAlbum.id}, { name: newAlbum.name }] })
                 .lean() //tells Mongoose to skip step of creating full model & directly get a doc
                 .select('id name')
@@ -271,11 +267,12 @@ module.exports = {
                             return;
                         }
                     }
-                    callback(null, newAlbum, null);
+                    callback(null, params);
                 });
         };
         
-        var executeAddAlbum = function (newAlbum, tracks, extras, callback) {
+        var executeAddAlbum = function (params, callback) {
+            var tracks = params.tracks;
             
             var newAlbumModel = new albumModel({
                 id: newAlbum.id,
@@ -302,6 +299,8 @@ module.exports = {
          * Task execution flow
          */
         async.waterfall([
+            async.constant({requestBody: request.body, album:newAlbum}),            
+            utilities.checkIfUserIsAuthorized,
             checkIfAlbumExists,
             getTrackIds,
             checkTrackIdValidity,

@@ -21,7 +21,7 @@ module.exports = {
     getTrackDetails: function (request, response) {
         var trackId = request.body.id;
 
-        var executeGetTrackDetails = function (callback) {
+        var executeGetTrackDetails = function (params, callback) {
             trackModel.findOne({ id: trackId })
                 .lean()
                 .populate({ path: 'album', select: 'id name'})
@@ -40,7 +40,7 @@ module.exports = {
                 });
         };
         async.waterfall([
-            async.constant(request.body),
+            async.constant({requestBody: request.body}),
             requestValidations.validateGetTrackDetailsRequest,
             executeGetTrackDetails
         ],
@@ -51,7 +51,7 @@ module.exports = {
     searchTrackByName: function (request, response) {
         var searchText = request.body.searchText;
     
-        var getResultTracks = function (callback) {
+        var getResultTracks = function (params, callback) {
             trackModel.find({ $text: { $search: searchText } })
                 .lean()
                 .select('id name')
@@ -71,7 +71,7 @@ module.exports = {
 
         /**Always write below line after defining functions you want to use. Else functions will come as undefined */
         async.waterfall([
-            async.constant(request.body.requestBase),
+            async.constant({requestBase: request.body.requestBase}),
             requestValidations.validateRequestBase,
             getResultTracks
         ],
@@ -88,7 +88,7 @@ module.exports = {
         var pageNumber = reqBody.pageNumber || 1;
         
 
-        var execGetTracks = function (callback) {
+        var execGetTracks = function (params, callback) {
             /**We are connected to db. ready to fetch albums */
             trackModel.find({})
                 .lean()
@@ -110,7 +110,7 @@ module.exports = {
 
         /**Always wr0ite below line after defining functions you want to use. Else functions will come as undefined */
         async.waterfall([
-            async.constant(request.body.requestBase),
+            async.constant({requestBase: request.body.requestBase}),
             requestValidations.validateRequestBase,
             execGetTracks
         ],
@@ -122,7 +122,7 @@ module.exports = {
     editTrack: function (request, response) {
         var editTrack = request.body.track;
 
-        var checkIfTrackExists = function (callback) {
+        var checkIfTrackExists = function (params, callback) {
             trackModel.findOne({ id: editTrack.id })
                 .populate('album')
                 .exec(function (error, track) { 
@@ -141,8 +141,8 @@ module.exports = {
                         });    
                         return;
                     }
-                    
-                    callback(null, { dbTrack: track });
+                    params.dbTrack = track;
+                    callback(null, params);
                 });
         };
 
@@ -169,9 +169,9 @@ module.exports = {
                     }   
                 });
         };
-        var checkIfAlbumExists = function (extras, callback) {
+        var checkIfAlbumExists = function (params, callback) {
             if (!editTrack.album || !editTrack.album.id) {
-                callback(null, null, extras);
+                callback(null, params);
                 return;
             }
             albumModel.findOne({ id: editTrack.album.id })
@@ -192,11 +192,14 @@ module.exports = {
                         return;
                     }
                     
-                    callback(null, album, extras);
+                    params.dbAlbum = album;
+                    callback(null, params);
                 });    
         };        
-        var executeEditTrack = function (dbAlbum, extras, callback) {
-            var dbTrack = extras.dbTrack;
+        var executeEditTrack = function (extras, callback) {
+            var dbAlbum = extras.dbAlbum,
+                dbTrack = extras.dbTrack;
+            
             for (var field in trackModel.schema.paths) {
                 if (['_id', '__v'].indexOf(field) >= 0) {
                     continue;
@@ -230,7 +233,7 @@ module.exports = {
         /*TODO: create one method for each operation validation & use it in
         every chain */
         async.waterfall([
-            async.constant(request.body),
+            async.constant({requestBody: request.body}),
             requestValidations.validateEditTrackRequest,
             checkIfTrackExists,
             checkForDuplicateAudioUrl,
@@ -245,7 +248,7 @@ module.exports = {
     addTrack: function (request, response) {
         var newTrack = request.body.track;
         
-        var checkIfTrackExists = function (callback) {
+        var checkIfTrackExists = function (params, callback) {
             trackModel.findOne({ $or: [{id: newTrack.id}, { name: newTrack.name }, {audioUrl: newTrack.audioUrl}] })
                 .lean() //tells Mongoose to skip step of creating full model & directly get a doc
                 .select('id name audioUrl')
@@ -276,13 +279,13 @@ module.exports = {
                         });
                         return;
                     }
-                    callback(null);
+                    callback(null, params);
                 });
         };
 
-        var findAssociatedAlbum = function (callback) {
+        var findAssociatedAlbum = function (params, callback) {
             if (!newTrack.albumId) {
-                callback(null, null);
+                callback(null, params);
             }
             else {
                 albumModel.findOne({ id: newTrack.albumId })
@@ -302,12 +305,13 @@ module.exports = {
                             });
                             return;
                         }
-                        callback(null, album);
+                        params.album = album;
+                        callback(null, params);
                     });
             }
         };
-        var executeAddTrack = function (album, callback) {
-            
+        var executeAddTrack = function (params, callback) {
+            var album = params.album;
             var newTrackModel = new trackModel({
                 id: newTrack.id,
                 name: newTrack.name,
@@ -336,7 +340,7 @@ module.exports = {
          * Task execution flow
          */
         async.waterfall([
-            async.constant(request.body),
+            async.constant({requestBody: request.body}),
             requestValidations.validateAddTrackRequest,
             checkIfTrackExists,
             findAssociatedAlbum,

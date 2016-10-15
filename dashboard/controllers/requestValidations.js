@@ -1,18 +1,15 @@
 var operationResults = require('../../common/constants').operationResults;
 
-exports.requestValidations = {
-    requestBase: this.isRequestBaseValid,
-    addAlbum: this.isAddAlbumRequestValid
-};
-
 var that = this;
 
 this.isRequestBaseValid = function (requestBase) {
     return requestBase && requestBase.requestId;
 };
 
-this.validateGetTrackDetailsRequest = function (requestBody, callback) {
-    var result = null;
+this.validateGetTrackDetailsRequest = function (params, callback) {
+    var requestBody = params.requestBody,
+        result = null;
+    
     if (!that.isRequestBaseValid(requestBody.requestBase)) {
         result = operationResults.invalidRequest;
     }
@@ -20,11 +17,13 @@ this.validateGetTrackDetailsRequest = function (requestBody, callback) {
         result = operationResults.trackOps.idEmpty;
     }
 
-    callback(result);
+    callback(result, params);
 };
 
-this.validateGetAlbumDetailsRequest = function (requestBody, callback) {
-    var result = null;
+this.validateGetAlbumDetailsRequest = function (params, callback) {
+    var requestBody = params.requestBody,
+        result = null;
+    
     if (!that.isRequestBaseValid(requestBody.requestBase)) {
         result = operationResults.invalidRequest;
     }
@@ -32,76 +31,107 @@ this.validateGetAlbumDetailsRequest = function (requestBody, callback) {
         result = operationResults.albumOps.idEmpty;
     }
 
-    callback(result);
+    callback(result, params);
 };
 
 /*TODO: rename invalidRequest to invalidRequestBase */
-this.validateEditTrackRequest = function (requestBody, callback) {
-    var result = null,
+this.validateEditTrackRequest = function (params, callback) {
+    var requestBody = params.requestBody,
+        result = null,
         track = requestBody.track;
     
     if (!that.isRequestBaseValid(requestBody.requestBase)) {
         result = operationResults.invalidRequest;
     }
-    else if (!track.id || track.id === undefined) {
+    else if (!track) {
+        result = operationResults.trackOps.trackObjectEmpty;
+    }
+    else if (!track.id) {
         result = operationResults.trackOps.idEmpty;
     }
-    else if (!track.name || track.name === undefined) {
+    else if (!track.name) {
         result = operationResults.trackOps.nameEmpty;
+    }
+    else if (!track.audioUrl) {
+        result = operationResults.trackOps.audioUrlEmpty;
     }
     
     //TODO: add audioUrl existance validation
-    callback(result);
+    callback(result, params);
 };
 
-this.validateAddTrackRequest = function (requestBody, callback) {
-    var result = null,
+this.validateAddTrackRequest = function (params, callback) {
+    var requestBody = params.requestBody,
+        result = null,
         track = requestBody.track;
     
     if (!that.isRequestBaseValid(requestBody.requestBase)) {
         result = operationResults.invalidRequest;
     }
-    else if (!track.id || track.id === undefined) {
+    else if (!track) {
+        result = operationResults.trackOps.trackObjectEmpty;
+    }
+    else if (!track.id) {
         result = operationResults.trackOps.idEmpty;
     }
-    else if (!track.name || track.name === undefined) {
+    else if (!track.name) {
         result = operationResults.trackOps.nameEmpty;
     }
-    else if (!track.audioUrl || track.audioUrl === undefined) {
+    else if (!track.audioUrl) {
         result = operationResults.trackOps.audioUrlEmpty;
     }
+    callback(result, params);
+};
+
+this.validateRequestBase = function (params, callback) {
+    var requestBase = params.requestBase,
+        result = null;
+
+    if (!requestBase || !requestBase.requestId) {
+        result = operationResults.invalidRequest;
+    }
     callback(result);
 };
 
-this.validateAlbumObject = function (album, callback) {
-    var result = null;
-    if (!album.id | album.id === undefined) {
+/** TODO: Try moving to controller file + in built validations */
+this.validateAddAlbumRequest = function (params, callback) {
+    var requestBody = params.requestBody,
+        result = null,
+        album = requestBody.album;
+
+    if (!that.isRequestBaseValid(requestBody.requestBase)) {
+        result = operationResults.invalidRequest;
+    }
+    else if (!album) {
+        result = operationResults.albumOps.albumObjectEmpty;
+    }
+    else if (!album.id) {
         result = operationResults.albumOps.idEmpty;
     }
-    else if (!album.name || album.name === undefined) {
+    else if (!album.name) {
         result = operationResults.albumOps.nameEmpty;
     }
-    callback(result);
+
+    callback(result, params);
 };
 
-this.validateRequestBase = function (requestBase, callback) {
-    if (!requestBase || !requestBase.requestId) {
-        callback({
-            result: operationResults.invalidRequest
-        });
-        return;
+this.validateEditAlbumRequest = function (params, callback) {
+    var album = params.album,
+        requestBase = params.requestBase,
+        result = null;
+        
+    if (!that.isRequestBaseValid(requestBase)) {
+        result = operationResults.invalidRequest;
     }
-    callback(null);
-};
+    else if (!album) {
+        result = operationResults.albumOps.albumObjectEmpty;
+    }
+    else if (!album.id) {
+        result = operationResults.albumOps.idEmpty;
+    }
+    else if (!album.name) {
+        result = operationResults.albumOps.nameEmpty;
+    }
 
-/** TODO: Try moving to controller file + in built validations */
-this.isAddAlbumRequestValid = function (request) {
-    return this.isRequestBaseValid(request.requestBase) &&
-        request.album && request.album.name;
-};
-
-/** TODO: Try moving to controller file + in built validations */
-this.isEditAlbumRequestValid = function (request) {
-    return this.isRequestBaseValid(request.requestBase) &&
-        request.album && request.album.name;
+    callback(result, params);
 };

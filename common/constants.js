@@ -2,6 +2,10 @@ exports.operationResults = {
     success: {
         code: 0
     },
+    accessDeniedUserUnauthorized: {
+        code: 'ER_17',
+        message: 'You are not authorized to do this operation. Contact dev team.'
+    },
     invalidRequest: {
         code: 'ER_1',
         message: 'Invalid request sent. Contact dev team.'
@@ -19,6 +23,10 @@ exports.operationResults = {
         message: 'DB Operation failed. Contact dev team.'
     },
     albumOps: {
+        albumObjectEmpty: {
+            code: 'ER_18',
+            message: 'Album object is empty. Contact dev team'
+        },
         id: {
             code: 'ER_7',
             message: 'Album id already exists. Contact dev team.'
@@ -50,6 +58,10 @@ exports.operationResults = {
 
     },
     trackOps: {
+        trackObjectEmpty: {
+            code: 'ER_19',
+            message: 'Track object is empty. Contact dev team'
+        },
         idEmpty: {
             code: 'ER_9',
             message: 'Track id is empty. Contact dev team.'
