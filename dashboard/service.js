@@ -82,19 +82,24 @@ passport.use(new GoogleStrategy({
     //then edit your /etc/hosts local file to point on your private IP. 
     //Also both sign-in button + callbackURL has to be share the same url, otherwise two cookies will be created and lead to lost your session
     //if you use it.
-    callbackURL: "/authCallback",
+    callbackURL: "/authorizeCallback",
     passReqToCallback   : true
   },
   function(request, accessToken, refreshToken, profile, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
-      
-      console.log(profile);
-      // To keep the example simple, the user's Google profile is returned to
-      // represent the logged-in user.  In a typical application, you would want
-      // to associate the Google account with a user record in your database,
-      // and return that user instead.
-      return done(null, profile);
+        
+        if (config.appConfig.adminAccessEmailList.indexOf(profile.email) < 0) {
+            request.res.send(401, "You are not authorized to perform this operation! Contact dev team.");    
+        }
+        else {
+            console.log(profile);
+            // To keep the example simple, the user's Google profile is returned to
+            // represent the logged-in user.  In a typical application, you would want
+            // to associate the Google account with a user record in your database,
+            // and return that user instead.
+            return done(null, profile);      
+        }
     });
   }
 ));
@@ -109,13 +114,13 @@ passport.deserializeUser(function(obj, done) {
     done(null, obj);
 });
 
-app.get('/authCallback', 
+app.get('/authorizeCallback', 
     	passport.authenticate( 'google', { 
     		successRedirect: '/index',
     		failureRedirect: '/'
     }));
 
-app.get('/auth', passport.authenticate('google', { scope: [
+app.get('/authorize', passport.authenticate('google', { scope: [
        'email', 'profile'] 
 }));
 

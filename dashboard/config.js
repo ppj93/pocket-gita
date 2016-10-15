@@ -5,5 +5,7 @@ exports.appConfig = {
      */
     viewDirectories: [
         'partials'
-    ]
+    ],
+    
+    adminAccessEmailList: ['admin@pocketgita.com', 'pravinjoshi95@gmail.com'] 
 };
