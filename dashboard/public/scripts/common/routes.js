@@ -3,8 +3,8 @@
     angular.module('config').config(function ($stateProvider, $locationProvider, $urlRouterProvider) {    
         $stateProvider
             .state('login', {
-                url: '/google',
-                templateUrl: 'google'
+                url: '/login',
+                templateUrl: 'login'
             })
             .state('manageAlbumsState', {
                 url: '/albums',

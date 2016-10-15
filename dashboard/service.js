@@ -26,6 +26,10 @@ app.engine('handlebars', handlebars());
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/public/views')
 app.get('/', function (req, res) {
+    res.render('login');
+});
+
+app.get('/index', function (req, res) {
     res.render('index');
 });
 
@@ -77,14 +81,14 @@ passport.use(new GoogleStrategy({
     //then edit your /etc/hosts local file to point on your private IP. 
     //Also both sign-in button + callbackURL has to be share the same url, otherwise two cookies will be created and lead to lost your session
     //if you use it.
-    callbackURL: "http://admin.pocketgita1.com:9000/auth",
+    callbackURL: "/authCallback",
     passReqToCallback   : true
   },
   function(request, accessToken, refreshToken, profile, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
       
-        console.log(profile);
+      console.log(profile);
       // To keep the example simple, the user's Google profile is returned to
       // represent the logged-in user.  In a typical application, you would want
       // to associate the Google account with a user record in your database,
@@ -97,20 +101,20 @@ passport.use(new GoogleStrategy({
 app.use(passport.initialize());
 
 passport.serializeUser(function(user, done) {
-  done(null, user);
+    done(null, user);
 });
 
 passport.deserializeUser(function(obj, done) {
-  done(null, obj);
+    done(null, obj);
 });
 
-app.get('/auth', 
+app.get('/authCallback', 
     	passport.authenticate( 'google', { 
-    		successRedirect: '/',
+    		successRedirect: '/index',
     		failureRedirect: '/login'
     }));
 
-app.get('/google', passport.authenticate('google', { scope: [
+app.get('/auth', passport.authenticate('google', { scope: [
        'email', 'profile'] 
 }));
 
