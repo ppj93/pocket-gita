@@ -33,6 +33,7 @@ app.get('/index', function (req, res) {
     res.render('index');
 });
 
+
 albumCtrl.registerRoutes(app);
 trackCtrl.registerRoutes(app);
 
@@ -111,7 +112,7 @@ passport.deserializeUser(function(obj, done) {
 app.get('/authCallback', 
     	passport.authenticate( 'google', { 
     		successRedirect: '/index',
-    		failureRedirect: '/login'
+    		failureRedirect: '/'
     }));
 
 app.get('/auth', passport.authenticate('google', { scope: [
