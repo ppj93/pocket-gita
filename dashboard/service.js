@@ -4,6 +4,8 @@ var express = require('express'),
     config = require('./config'),
     fs = require('fs'),
     app = express(),
+    expressSession = require('express-session'),
+    cookieParser = require('cookie-parser'),
     handlebars = require('express-handlebars'),
     bodyParser = require('body-parser'),
     _ = require('underscore'),
@@ -18,6 +20,10 @@ var GOOGLE_CLIENT_ID      = "41242017152-a5jlf53g0iasia2sq37mmk52ja944r43.apps.g
 app.set('port', config.appConfig.port);
 
 app.use(express.static(__dirname + '/public'));
+app.use(cookieParser());
+
+app.use(expressSession({ name: config.appConfig.cookieName, secret: config.appConfig.cookieSecret}));
+
 
 /* Foll is required to access POST data in a request */
 app.use(bodyParser.json());
@@ -32,6 +38,11 @@ app.get('/', function (req, res) {
 app.get('/index', function (req, res) {
     res.render('index');
 });
+
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 albumCtrl.registerRoutes(app);
 trackCtrl.registerRoutes(app);
@@ -104,13 +115,13 @@ passport.use(new GoogleStrategy({
   }
 ));
 
-app.use(passport.initialize());
-
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
+    console.log("user is");
+    console.log(user);
     done(null, user);
 });
 
-passport.deserializeUser(function(obj, done) {
+passport.deserializeUser(function (obj, done) { 
     done(null, obj);
 });
 
