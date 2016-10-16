@@ -117,7 +117,7 @@ this.validateAddAlbumRequest = function (params, callback) {
 
 this.validateEditAlbumRequest = function (params, callback) {
     var album = params.album,
-        requestBase = params.requestBase,
+        requestBase = params.requestBody.requestBase,
         result = null;
         
     if (!that.isRequestBaseValid(requestBase)) {

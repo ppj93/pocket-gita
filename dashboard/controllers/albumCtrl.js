@@ -13,7 +13,8 @@ var getTrackIds = function (params, callback) {
     var newAlbum = params.album;
 
     if (!newAlbum.tracks || newAlbum.tracks.length === 0) {
-        callback(null, newAlbum, [], params);
+        params.tracks = [];
+        callback(null, params);
         return; 
     }
 
@@ -86,7 +87,7 @@ module.exports = {
                 });
         };
         async.waterfall([
-            async.constant({requestBody: request.body}),
+            async.constant({request: request, requestBody: request.body}),
             utilities.checkIfUserIsAuthorized,
             requestValidations.validateGetAlbumDetailsRequest,
             executeGetAlbumDetails
@@ -118,9 +119,9 @@ module.exports = {
 
         /**Always write below line after defining functions you want to use. Else functions will come as undefined */
         async.waterfall([
-            async.constant({ requestBase: request.body.requestBase}),
+            async.constant({ request: request, requestBase: request.body.requestBase}),
             utilities.checkIfUserIsAuthorized,
-            utilities.validateRequestBase,
+            requestValidations.validateRequestBase,
             getResultAlbums
         ],
             utilities.getUiJsonResponseSender(response)
@@ -225,9 +226,9 @@ module.exports = {
         };
 
         async.waterfall([
-            async.constant({requestBody: request.body, album: album}),
+            async.constant({request: request, requestBody: request.body, album: album}),
             utilities.checkIfUserIsAuthorized,
-            utilities.validateEditAlbumRequest,
+            requestValidations.validateEditAlbumRequest,
             checkIfAlbumExists,
             getTrackIds,
             checkTrackIdValidity,
@@ -299,7 +300,7 @@ module.exports = {
          * Task execution flow
          */
         async.waterfall([
-            async.constant({requestBody: request.body, album:newAlbum}),            
+            async.constant({request: request, requestBody: request.body, album:newAlbum}),            
             utilities.checkIfUserIsAuthorized,
             checkIfAlbumExists,
             getTrackIds,
