@@ -166,9 +166,9 @@ module.exports = {
 
         /**Always write below line after defining functions you want to use. Else functions will come as undefined */
         async.waterfall([
-            async.constant({requestBase: request.body.requestBase}),
+            async.constant({request: request, requestBase: request.body.requestBase}),
             utilities.checkIfUserIsAuthorized,
-            utilities.validateRequestBase,
+            requestValidations.validateRequestBase,
             execGetAlbums
         ],
             utilities.getUiJsonResponseSender(response)

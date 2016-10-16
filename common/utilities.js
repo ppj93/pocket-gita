@@ -12,13 +12,14 @@ exports.getUiJsonResponseSender = function (response) {
     };
 };
 
-exports.checkIfUserIsAuthorized = function (extras, callback) {
-    if (!config.userLoggedIn) {
+exports.checkIfUserIsAuthorized = function (params, callback) {
+    var request = params.request;
+    if (!request.session.passport.user) {
         callback({
             result: operationResults.accessDeniedUserUnauthorized
         });
         return;
     } 
 
-    callback(null, extras);
+    callback(null, params);
 };

@@ -103,7 +103,7 @@ passport.use(new GoogleStrategy({
             request.res.send(401, "You are not authorized to perform this operation! Contact dev team.");    
         }
         else {
-            config.appConfig.userLoggedIn = true;
+            
             console.log(profile);
             // To keep the example simple, the user's Google profile is returned to
             // represent the logged-in user.  In a typical application, you would want

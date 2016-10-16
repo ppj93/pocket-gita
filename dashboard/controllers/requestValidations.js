@@ -90,7 +90,7 @@ this.validateRequestBase = function (params, callback) {
     if (!requestBase || !requestBase.requestId) {
         result = operationResults.invalidRequest;
     }
-    callback(result);
+    callback(result, params);
 };
 
 /** TODO: Try moving to controller file + in built validations */

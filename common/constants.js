@@ -4,7 +4,7 @@ exports.operationResults = {
     },
     accessDeniedUserUnauthorized: {
         code: 'ER_17',
-        message: 'You are not authorized to do this operation. Contact dev team.'
+        message: 'Your session has expired or You are not authorized to do this operation. Try refreshing page. Contact dev team.'
     },
     invalidRequest: {
         code: 'ER_1',
