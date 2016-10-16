@@ -14,7 +14,7 @@ exports.getUiJsonResponseSender = function (response) {
 
 exports.checkIfUserIsAuthorized = function (params, callback) {
     var request = params.request;
-    if (!request.session.passport.user) {
+    if (!request.session.passport || !request.session.passport.user) {
         callback({
             result: operationResults.accessDeniedUserUnauthorized
         });

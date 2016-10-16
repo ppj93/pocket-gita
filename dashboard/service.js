@@ -22,7 +22,7 @@ app.set('port', config.appConfig.port);
 app.use(express.static(__dirname + '/public'));
 app.use(cookieParser());
 
-app.use(expressSession({ name: config.appConfig.cookieName, secret: config.appConfig.cookieSecret}));
+app.use(expressSession({ name: config.appConfig.cookieName, cookie: { secure: false }, secret: config.appConfig.cookieSecret}));
 
 
 /* Foll is required to access POST data in a request */
