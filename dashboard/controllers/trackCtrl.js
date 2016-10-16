@@ -147,11 +147,6 @@ module.exports = {
         };
 
         var checkForDuplicateAudioUrl = function (extras, callback) {
-            if (!editTrack.audioUrl) {
-                callback(null, extras);
-                return;
-            }
-            
             trackModel.findOne({ id: { $ne: editTrack.id }, audioUrl: editTrack.audioUrl })
                 .exec(function (error, track) {
                     var outResult = null;
