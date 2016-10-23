@@ -14,9 +14,6 @@
             
         this.init = function () { 
             that.getTracks();
-            trackService.searchAudioUrl("assdf").then(function (tracks) {
-                console.log(tracks);
-             }, function (error) { });
         };
 
         this.getTracks = function () { 
