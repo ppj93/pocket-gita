@@ -1,8 +1,8 @@
 (function () { 
     'use strict';
 
-    angular.module('services').factory('trackService', ['_', 'constants', 'albumService', '$q', '$http', 'uuidService', 'serviceUrls', 'utilityService', 
-        function (_, constants, albumService, $q, $http, uuidService, serviceUrls, utilityService) {
+    angular.module('services').factory('trackService', ['_', 'constants', 'albumService', '$q', '$http', 'uuidService', 'serviceUrls', 'utilityService',
+    'amazonS3Service', function (_, constants, albumService, $q, $http, uuidService, serviceUrls, utilityService, amazonS3Service) {
         var service = {};
 
         var cache = utilityService.createNewOrGetExistingCache('albumAndTrackLists');
@@ -150,6 +150,23 @@
 
         };
   
+        service.searchAudioUrl = function (name) {
+            return amazonS3Service.getS3Tracks().then(function (tracks) { 
+                var x = _.filter(tracks, function (track) {
+                    if (!track.fileName.endsWith('.mp3')) { 
+                        return false;
+                    }
+
+                    var fileNameWithoutMp3Extension = track.fileName.substring(0, track.fileName.length - 3);
+                    return fileNameWithoutMp3Extension.indexOf(name) > -1;
+                });
+
+                return x;
+            }, function (error) {
+                return $q.reject({ message: constants.messages.unableToFetchAmazonS3Tracks });
+            });
+        };
+            
         return service;
     }]);
 })();

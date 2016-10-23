@@ -14,6 +14,9 @@
             
         this.init = function () { 
             that.getTracks();
+            trackService.searchAudioUrl("assdf").then(function (tracks) {
+                console.log(tracks);
+             }, function (error) { });
         };
 
         this.getTracks = function () { 
@@ -63,12 +66,27 @@
         };
             
         this.albumNameTypeaheadConfig = {
-            name: 'vaguaename',
+            name: 'albumNameTypeahead',
             source: that.searchAlbumByName,
             displayText: function (album) { return album.name; },
             async: true
         };
+
+        this.searchAudioUrl = function (query, aSyncResults) {
+            trackService.searchAudioUrl(query).then(function (s3Tracks) { 
+                aSyncResults(s3Tracks);
+            }, function (error) { 
+                that.message = utilityService.constructMessageObject(constants.messageTypes.error, error.message);
+            });    
+        };
             
+        this.audioUrlTypeaheadConfig = {
+            name: 'audioUrlTypeahead',
+            source: that.searchAudioUrl,
+            displayText: function (track) { return track.name; },
+            async: true
+        };
+
         this.setupAddOrEditTrack = function (action, track) {
             that.action = action;
             that.fieldsInEditMode = true;

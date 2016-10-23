@@ -7,7 +7,7 @@ exports.appConfig = {
         'partials'
     ],
     
-    adminAccessEmailList: ['admin@pocketgita.com', 'f2011522@goa.bits-pilani.ac.in'],
+    adminAccessEmailList: ['admin@pocketgita.com', 'pravinjoshi95@gmail.com'],
     
     cookieSecret: 'namSadhana',
 

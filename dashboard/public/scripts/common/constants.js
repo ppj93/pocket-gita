@@ -11,7 +11,8 @@
                 edit: 'edit'
             },
             messages: {
-                albumNotFoundInDb: 'Album name you have entered does not exist. Please search for album name & select from available options.'
+                albumNotFoundInDb: 'Album name you have entered does not exist. Please search for album name & select from available options.',
+                unableToFetchAmazonS3Tracks: 'Not able to fetch tracks from amazon s3. Contact dev team.'
             }
         })
 })();
