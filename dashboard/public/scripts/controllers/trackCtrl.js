@@ -109,6 +109,10 @@
             }
         };
 
+        this.clickMp3ChooserButton = function () {
+            $("#track-mp3-chooser").click();            
+        };
+            
         /** Start execution here */
         this.init();
     }]);

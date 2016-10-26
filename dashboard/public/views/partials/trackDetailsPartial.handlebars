@@ -28,13 +28,17 @@
                 typeahead selector="#audioUrl" controller="trkCtrl" config="audioUrlTypeaheadConfig"
                 autocomplete="off" spellcheck="false" required>
                 <div class="input-group-addon">Use existing</div>
-                <div class="input-group-addon"><span class="glyphicon glyphicon-plus"></span>Add New</div>
+                <div class="input-group-addon" ng-click="trkCtrl.clickMp3ChooserButton()"><span class="glyphicon glyphicon-plus"></span>Add New</div>
             </div>
             <div ng-if="!trkCtrl.fieldsInEditMode">
                 <img ng-src="{[albCtrl.track.audioUrl]}" alt="Audio Url">
             </div>
         </div>
     </div>
+
+    <input style="visibility: hidden" type="file" id="track-mp3-chooser" /> 
+    
+    <span display-html5-file-upload-name upload-element-selector="#track-mp3-chooser"></span>
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
