@@ -9,3 +9,5 @@ dashboard/public/lib
 website/public/lib
 
 .vscode
+
+secret.js
