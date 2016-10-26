@@ -11,7 +11,7 @@ var express = require('express'),
     _ = require('underscore'),
     albumCtrl = require('./controllers/albumCtrl'),
     trackCtrl = require('./controllers/trackCtrl'),
-    loginCtrl = require('./controllers/loginCtrl');
+    securityCtrl = require('./controllers/securityCtrl');
 
 app.set('port', config.appConfig.port);
 
@@ -37,7 +37,7 @@ app.get('/index', function (req, res) {
 
 albumCtrl.registerRoutes(app);
 trackCtrl.registerRoutes(app);
-loginCtrl.registerPassportModules(app);
+securityCtrl.registerPassportModulesAndRoutes(app);
 
 var autoViews = {};
 app.use(function (req, res, next) {
@@ -62,9 +62,6 @@ app.use(function (req, res, next) {
                 autoViews[path] = dirName.replace(/^\//, '') + '/' + fileName;
                 found = true;
                 return res.render(autoViews[path]);
-            } else {
-                //TODO: remove else when dev fairly stable
-                console.log(__dirname + '/public/views/' + dirName + path + '.handlebars');
             }
         });
     });

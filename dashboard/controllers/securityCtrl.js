@@ -1,6 +1,10 @@
-var passport = require('passport'),
+var operationResults = require('../../common/constants').operationResults,
+    passport = require('passport'),
     googleStrategy = require('passport-google-oauth2').Strategy,
-    config = require('../config');
+    config = require('../config'),
+    async = require('async'),
+    utilities = require('../../common/utilities'),
+    secret = require('../secret');
 
 passport.serializeUser(function (user, done) {
     done(null, user);
@@ -11,7 +15,7 @@ passport.deserializeUser(function (obj, done) {
 });
 
 module.exports = {
-    registerPassportModules: function (app) {
+    registerPassportModulesAndRoutes: function (app) {
         passport.use(new googleStrategy({
             clientID: config.appConfig.googleClientId,
             clientSecret: config.appConfig.googleClientSecret,
@@ -32,12 +36,6 @@ module.exports = {
                         request.res.send(401, "You are not authorized to perform this operation! Contact dev team.");
                     }
                     else {
-            
-                        console.log(profile);
-                        // To keep the example simple, the user's Google profile is returned to
-                        // represent the logged-in user.  In a typical application, you would want
-                        // to associate the Google account with a user record in your database,
-                        // and return that user instead.
                         return done(null, profile);
                     }
                 });
@@ -57,6 +55,24 @@ module.exports = {
             scope: [
                 'email', 'profile']
         }));
+
+        app.get('/getAmazonS3Credentials', function (request, response) {
+            var executeGetAmazonS3Credentials = function (params, callback) { 
+                callback(null, {
+                    result: operationResults.success,
+                    credentials: secret.amazonS3 
+                });
+            };
+
+            async.waterfall([
+                async.constant({request: request}),
+                utilities.checkIfUserIsAuthorized,
+                executeGetAmazonS3Credentials
+            ],
+                utilities.getUiJsonResponseSender(response)
+            );
+
+        });
     }
 };
 
