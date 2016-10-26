@@ -11,5 +11,9 @@ exports.appConfig = {
     
     cookieSecret: 'namSadhana',
 
-    cookieName: 'pocketGitaSessionId'
+    cookieName: 'pocketGitaSessionId',
+
+    googleClientId: "41242017152-a5jlf53g0iasia2sq37mmk52ja944r43.apps.googleusercontent.com",
+
+    googleClientSecret: "-4OoXlnDG1V4dx1GNltb2qUP"
 };
