@@ -20,6 +20,12 @@ mongoUtil.connectToDb(function (error, response) {
         .use(vhost(config.appConfig.mainSiteUrl, require('./website/service').app))
         .listen(config.appConfig.port);
 });
+/*
+app.use(function(request, response, next){
+    response.status(404);
+    response.render('../../common/views/404');
+});
+*/
 
 app.use(function (error, request, response, next) { 
     response.status(500);
