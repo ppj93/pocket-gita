@@ -90,7 +90,7 @@
                     delete that.album;
                     $state.go('manageAlbumsState.list');
                 }, function (error) {
-                    that.message = utilityService.constructMessageObject(constants.messageTypes.error, error);
+                    that.message = utilityService.constructMessageObject(constants.messageTypes.error, error.message);
                 });
             }
         };
@@ -117,7 +117,7 @@
 
                     $state.go('manageAlbumsState.albumDetails', { id: that.album.id });
                 }, function (error) {
-                    that.message = utilityService.constructMessageObject(constants.messageTypes.error, error);
+                    that.message = utilityService.constructMessageObject(constants.messageTypes.error, error.message);
                 });
             }
 
