@@ -6,14 +6,23 @@
 (function () {
     'use strict';
 
-    angular.module('controllers').controller('albumCtrl', ['_', '$scope','trackService', 'utilityService', 'constants', 'albumService',
-        '$state', 'uuidService', function (_, $scope, trackService, utilityService, constants, albumService, $state, uuidService) {
+    angular.module('controllers').controller('albumCtrl', ['_', 'appConfig', 'amazonS3Service', '$scope','trackService', 'utilityService', 'constants', 'albumService',
+        '$state', 'uuidService', function (_, appConfig, amazonS3Service, $scope, trackService, utilityService, constants, albumService, $state, uuidService) {
         var that = this;
 
         this.constants = constants;
             
         this.init = function () { 
-            that.getAlbums();
+            if (!appConfig.applicationInitialized) {
+                amazonS3Service.initializeS3Client().then(function (response) { 
+                    that.getAlbums();
+                    appConfig.applicationInitialized = true;
+                }, function (error) { 
+                    that.message = utilityService.constructMessageObject(constants.messageTypes.error, error.message);
+                });    
+            } else {
+                that.getAlbums();                
+            }
         };
 
         this.searchTrackByName = function (query, aSyncResults) {

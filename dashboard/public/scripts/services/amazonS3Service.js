@@ -1,21 +1,33 @@
 (function () { 
     'use strict';
 
-    angular.module('services').factory('amazonS3Service', ['utilityService', '_', '$q', 'appConfig',
-        function (utilityService, _, $q, appConfig) {
+    angular.module('services').factory('amazonS3Service', ['$http', 'serviceUrls', 'utilityService', '_', '$q', 'appConfig',
+        function ($http, serviceUrls, utilityService, _, $q, appConfig) {
         var service = {};
 
         var cache = utilityService.createNewOrGetExistingCache('amazonS3Data');
         
         var s3 = new AWS.S3();
+            
+        service.initializeS3Client = function () { 
+            return $http.get(serviceUrls.getAmazonS3Credentials).then(function (response) {
+                var data = response.data;
 
-        s3.config.update({
-            accessKeyId: '',
-            secretAccessKey: '',
-            region:'ap-south-1',
-            signatureVersion: 'v4'
-        });
+                if (data.result.code !== 0) {
+                    return $q.reject(data.result);
+                }
+                
+                var credentials = data.credentials;
+                
+                s3.config.update({
+                    accessKeyId: credentials.accessKeyId,
+                    secretAccessKey: credentials.secretAccessKey,
+                    region:'ap-south-1',
+                    signatureVersion: 'v4'
+                });
 
+             }, utilityService.handleNetworkError);            
+        };            
         service.getS3Tracks = function () { 
             //Foll returns Cache object identified by the cacheId or undefined if no such cache.
             if (cache.get('tracks')!== undefined) {

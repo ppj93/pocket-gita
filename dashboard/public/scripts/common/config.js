@@ -12,7 +12,8 @@
             addTrack: "/addTrack",
             editTrack: "/editTrack",
             getTrackDetails: 'getTrackDetails',
-            deleteTrack: "/deleteTrack"
+            deleteTrack: "/deleteTrack",
+            getAmazonS3Credentials: '/getAmazonS3Credentials'
         })
         .config(['$interpolateProvider', function ($interpolateProvider) {
             /**
