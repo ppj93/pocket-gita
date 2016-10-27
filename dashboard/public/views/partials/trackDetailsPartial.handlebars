@@ -33,12 +33,12 @@
             <div ng-if="!trkCtrl.fieldsInEditMode">
                 <img ng-src="{[albCtrl.track.audioUrl]}" alt="Audio Url">
             </div>
+            <span display-html5-file-upload-name upload-element-selector="#track-mp3-chooser"></span>
         </div>
     </div>
 
     <input style="visibility: hidden" type="file" id="track-mp3-chooser" /> 
     
-    <span display-html5-file-upload-name upload-element-selector="#track-mp3-chooser"></span>
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
