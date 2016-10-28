@@ -33,9 +33,9 @@
             <div ng-if="!trkCtrl.fieldsInEditMode">
                 <img ng-src="{[albCtrl.track.audioUrl]}" alt="Audio Url">
             </div>
-            <span set-uploaded-files-on-controller-field controller="trkCtrl" field="mp3Files" upload-element-selector="#track-mp3-chooser">
-                <h4 ng-if="trkCtrl.mp3Files">
-                    <span class="label label-primary">{[trkCtrl.mp3Files[0].name]} <span ng-click="trkCtrl.removeUploadedMp3()" class="glyphicon glyphicon-remove"></span></span>
+            <span set-uploaded-files-on-controller-field controller="trkCtrl" object="track" field="mp3Files" upload-element-selector="#track-mp3-chooser">
+                <h4 ng-if="trkCtrl.track.mp3Files">
+                    <span class="label label-primary">{[trkCtrl.track.mp3Files[0].name]} <span ng-click="trkCtrl.removeUploadedMp3()" class="glyphicon glyphicon-remove"></span></span>
                 </h4>
             </span>
         </div>
@@ -47,7 +47,7 @@
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <div ng-if="trkCtrl.fieldsInEditMode">
-                <button class="btn btn-primary" ng-disabled="modifyTrackForm.$invalid && !trkCtrl.track.audioUrl && !trkCtrl.mp3Files[0]" ng-click="trkCtrl.submitAddOrEditTrack(trkCtrl.track)">Submit</button>
+                <button class="btn btn-primary" ng-disabled="modifyTrackForm.$invalid && !trkCtrl.track.audioUrl && !trkCtrl.track.mp3Files[0]" ng-click="trkCtrl.submitAddOrEditTrack(trkCtrl.track)">Submit</button>
                 <button class="btn btn-danger" ng-click="trkCtrl.cancelAddOrEditTrack()">Cancel</button>
             </div>
             <div ng-if="!trkCtrl.fieldsInEditMode">

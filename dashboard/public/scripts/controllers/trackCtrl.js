@@ -39,7 +39,7 @@
         };   
             
         this.removeUploadedMp3 = function () {
-            delete that.mp3Files;  
+            delete that.track.mp3Files;  
         };
             
         this.submitAddOrEditTrack = function (track) {

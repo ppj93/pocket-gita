@@ -13,6 +13,7 @@
             messages: {
                 albumNotFoundInDb: 'Album name you have entered does not exist. Please search for album name & select from available options.',
                 unableToFetchAmazonS3Tracks: 'Not able to fetch tracks from amazon s3. Contact dev team.'
-            }
+            },
+            amazonS3UrlBase: 'https://{bucket}.s3.amazonaws.com/{key}'
         })
 })();

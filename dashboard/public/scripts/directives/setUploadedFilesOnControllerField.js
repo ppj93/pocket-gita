@@ -5,6 +5,7 @@
         return function (scope, element, attrs) {
             var fileChooser = $(attrs['uploadElementSelector'])[0],
                 controllerObjectName = attrs['controller'],
+                objectName = attrs['object'],
                 fieldName = attrs['field'];
             
             var watcherFunction = function () {
@@ -12,7 +13,7 @@
             };          
 
             fileChooser.onchange = function () {
-                scope[controllerObjectName][fieldName] = fileChooser.files;    
+                scope[controllerObjectName][objectName][fieldName] = fileChooser.files;    
                 scope.$apply();
             };
         };

@@ -1,13 +1,13 @@
 (function () { 
     'use strict';
 
-    angular.module('services').factory('amazonS3Service', ['$http', 'serviceUrls', 'utilityService', '_', '$q', 'appConfig',
-        function ($http, serviceUrls, utilityService, _, $q, appConfig) {
+    angular.module('services').factory('amazonS3Service', ['$http', 'serviceUrls', 'utilityService', '_', '$q', 'appConfig', 'constants',
+        function ($http, serviceUrls, utilityService, _, $q, appConfig, constants) {
         var service = {};
 
         var cache = utilityService.createNewOrGetExistingCache('amazonS3Data');
         
-        var s3 = new AWS.S3();
+        var s3 = new AWS.S3({ params: { Bucket: appConfig.amazonS3BucketName } });
             
         service.initializeS3Client = function () { 
             return $http.get(serviceUrls.getAmazonS3Credentials).then(function (response) {
@@ -33,7 +33,7 @@
             if (cache.get('tracks')!== undefined) {
                 return $q.resolve(cache.get('tracks'));
             }
-            return s3.listObjectsV2({Bucket: appConfig.amazonS3BucketName, Prefix: 'tracks/'}).promise().then(function(data){
+            return s3.listObjectsV2({Prefix: 'tracks/'}).promise().then(function(data){
                 var tracksWithoutFolderEntry = _.reject(data.Contents, function (track) { return track.Key === 'tracks/'; });
                 
                 var decoratedTracks = _.map(tracksWithoutFolderEntry, function (track) { return {fileName: track.Key.substring(7, track.Key.length)}; })
@@ -45,6 +45,16 @@
             });
         };
         
+        service.uploadTrack = function (track) {
+            var params = { key: 'tracks/' + track.name, ContentType: track.type, Body: track };
+            return s3.upload(params).promise().then(function (data) { 
+                return constants.amazonS3UrlBase
+                    .replace('{bucket}', appConfig.amazonS3BucketName)
+                    .replace('{key}', 'tracks/' + track.name);
+            }, function (error) { 
+                return $q.reject(error);
+            });
+        };
         return service;
     }]);
 })();
