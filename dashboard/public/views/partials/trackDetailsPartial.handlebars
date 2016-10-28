@@ -47,7 +47,7 @@
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <div ng-if="trkCtrl.fieldsInEditMode">
-                <button class="btn btn-primary" ng-disabled="modifyTrackForm.$invalid" ng-click="trkCtrl.submitAddOrEditTrack(trkCtrl.track)">Submit</button>
+                <button class="btn btn-primary" ng-disabled="modifyTrackForm.$invalid && !trkCtrl.track.audioUrl && !trkCtrl.mp3Files[0]" ng-click="trkCtrl.submitAddOrEditTrack(trkCtrl.track)">Submit</button>
                 <button class="btn btn-danger" ng-click="trkCtrl.cancelAddOrEditTrack()">Cancel</button>
             </div>
             <div ng-if="!trkCtrl.fieldsInEditMode">
