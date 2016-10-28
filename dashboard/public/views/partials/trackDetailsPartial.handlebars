@@ -33,7 +33,11 @@
             <div ng-if="!trkCtrl.fieldsInEditMode">
                 <img ng-src="{[albCtrl.track.audioUrl]}" alt="Audio Url">
             </div>
-            <span display-html5-file-upload-name upload-element-selector="#track-mp3-chooser"></span>
+            <span set-uploaded-files-on-controller-field controller="trkCtrl" field="mp3Files" upload-element-selector="#track-mp3-chooser">
+                <h4 ng-if="trkCtrl.mp3Files">
+                    <span class="label label-primary">{[trkCtrl.mp3Files[0].name]} <span ng-click="trkCtrl.removeUploadedMp3()" class="glyphicon glyphicon-remove"></span></span>
+                </h4>
+            </span>
         </div>
     </div>
 

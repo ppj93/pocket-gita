@@ -38,6 +38,10 @@
             });
         };   
             
+        this.removeUploadedMp3 = function () {
+            delete that.mp3Files;  
+        };
+            
         this.submitAddOrEditTrack = function (track) {
             var promise;
             if (that.action === constants.actions.add) {
