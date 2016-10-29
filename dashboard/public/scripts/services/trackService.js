@@ -76,14 +76,14 @@
 
             var deferred = $q.defer();
 
-            var request = {
-                requestBase: {
-                    requestId: uuidService.v1()
-                },
-                track: track
-            };
-
-            var executeAddTrack = function (response) {
+            var executeAddTrack = function () {
+                var request = {
+                    requestBase: {
+                        requestId: uuidService.v1()
+                    },
+                    track: track
+                };
+                
                 return $http.post(serviceUrls.addTrack, request).then(function (response) {
                     var data = response.data;
                     /**
@@ -100,9 +100,20 @@
                 });
             };
             
-            amazonS3Service.uploadTrack(track.mp3Files[0]).then(executeAddTrack, function (error) {
-                deferred.reject({ message: constants.messages.unableToAddTrackAmazonS3 + ' ERROR OBJECT: ' + error.stack });
-            });
+            if (track.mp3Files) {
+                amazonS3Service.uploadTrack(track.mp3Files[0]).then(
+                    function (location) {
+                        track.audioUrl = location;
+                        executeAddTrack();
+                    },
+                    function (error) {
+                        deferred.reject({ message: constants.messages.unableToAddTrackAmazonS3 + ' ERROR OBJECT: ' + error.stack });
+                    }
+                );    
+            }
+            else {
+                executeAddTrack();
+            }
             
             return deferred.promise;
         };
