@@ -97,7 +97,7 @@
                 that.track = {
                     id: uuidService.v1()
                 }; 
-                $state.go('manageTracksState.trackDetails', { id: that.track.id });c
+                $state.go('manageTracksState.trackDetails', { id: that.track.id });
             }      
             else if (that.action === constants.actions.edit) {
                 trackService.getTrackDetails(track.id).then(function (track) { 

@@ -46,13 +46,16 @@
         };
         
         service.uploadTrack = function (track) {
-            var params = { key: 'tracks/' + track.name, ContentType: track.type, Body: track };
-            return s3.upload(params).promise().then(function (data) { 
-                return constants.amazonS3UrlBase
-                    .replace('{bucket}', appConfig.amazonS3BucketName)
-                    .replace('{key}', 'tracks/' + track.name);
-            }, function (error) { 
-                return $q.reject(error);
+            var params = { Key: 'tracks/' + track.name, ContentType: track.type, Body: track };
+            return new Promise(function (resolve, reject) {
+                s3.upload(params, function (error, data) {
+                    if (error) {
+                        reject(error);
+                    }
+                    else {
+                        resolve(data.Location);
+                    }
+                });
             });
         };
         return service;

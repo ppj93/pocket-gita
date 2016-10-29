@@ -74,6 +74,8 @@
         service.addTrack = function (track) {
             cache.removeAll();
 
+            var deferred = $q.defer();
+
             var request = {
                 requestBase: {
                     requestId: uuidService.v1()
@@ -81,21 +83,28 @@
                 track: track
             };
 
-            
-            var executeAddTrack = function () {
+            var executeAddTrack = function (response) {
                 return $http.post(serviceUrls.addTrack, request).then(function (response) {
                     var data = response.data;
                     /**
                      * Always use === and !== for comparison. Check google for reason.!
                      */
                     if (data.result.code !== 0) {
-                        return $q.reject(data.result);
+                        return deferred.reject(data.result);
                     }
 
-                    return;
+                    deferred.resolve();
 
-                }, utilityService.handleNetworkError);
+                }, function (error) {
+                    deferred.reject({ message: constants.messages.networkError });
+                });
             };
+            
+            amazonS3Service.uploadTrack(track.mp3Files[0]).then(executeAddTrack, function (error) {
+                deferred.reject({ message: constants.messages.unableToAddTrackAmazonS3 + ' ERROR OBJECT: ' + error.stack });
+            });
+            
+            return deferred.promise;
         };
             
         service.getTrackDetails = function (id) {

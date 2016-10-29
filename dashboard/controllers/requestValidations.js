@@ -17,6 +17,8 @@ this.validateGetTrackDetailsRequest = function (params, callback) {
         result = operationResults.trackOps.idEmpty;
     }
 
+    result = result ? { result: result } : result;
+
     callback(result, params);
 };
 
@@ -31,6 +33,8 @@ this.validateGetAlbumDetailsRequest = function (params, callback) {
         result = operationResults.albumOps.idEmpty;
     }
 
+    result = result ? { result: result } : result;
+    
     callback(result, params);
 };
 
@@ -56,6 +60,8 @@ this.validateEditTrackRequest = function (params, callback) {
         result = operationResults.trackOps.audioUrlEmpty;
     }
     
+    result = result ? { result: result } : result;
+    
     //TODO: add audioUrl existance validation
     callback(result, params);
 };
@@ -80,6 +86,8 @@ this.validateAddTrackRequest = function (params, callback) {
     else if (!track.audioUrl) {
         result = operationResults.trackOps.audioUrlEmpty;
     }
+    result = result ? { result: result } : result;
+    
     callback(result, params);
 };
 
@@ -90,6 +98,9 @@ this.validateRequestBase = function (params, callback) {
     if (!requestBase || !requestBase.requestId) {
         result = operationResults.invalidRequest;
     }
+
+    result = result ? { result: result } : result;
+    
     callback(result, params);
 };
 
@@ -112,6 +123,8 @@ this.validateAddAlbumRequest = function (params, callback) {
         result = operationResults.albumOps.nameEmpty;
     }
 
+    result = result ? { result: result } : result;
+    
     callback(result, params);
 };
 
@@ -133,5 +146,7 @@ this.validateEditAlbumRequest = function (params, callback) {
         result = operationResults.albumOps.nameEmpty;
     }
 
+    result = result ? { result: result } : result;
+    
     callback(result, params);
 };
