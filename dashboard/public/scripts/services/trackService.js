@@ -176,12 +176,7 @@
         service.searchAudioUrl = function (name) {
             return amazonS3Service.getS3Tracks().then(function (tracks) { 
                 var x = _.filter(tracks, function (track) {
-                    if (!track.fileName.endsWith('.mp3')) { 
-                        return false;
-                    }
-
-                    var fileNameWithoutMp3Extension = track.fileName.substring(0, track.fileName.length - 3);
-                    return fileNameWithoutMp3Extension.indexOf(name) > -1;
+                    return track.url.indexOf(name) > -1;
                 });
 
                 return x;

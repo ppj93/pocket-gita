@@ -84,7 +84,7 @@
         this.audioUrlTypeaheadConfig = {
             name: 'audioUrlTypeahead',
             source: that.searchAudioUrl,
-            displayText: function (track) { return track.name; },
+            displayText: function (track) { return track.url; },
             async: true
         };
 

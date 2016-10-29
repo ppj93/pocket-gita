@@ -36,7 +36,13 @@
             return s3.listObjectsV2({Prefix: 'tracks/'}).promise().then(function(data){
                 var tracksWithoutFolderEntry = _.reject(data.Contents, function (track) { return track.Key === 'tracks/'; });
                 
-                var decoratedTracks = _.map(tracksWithoutFolderEntry, function (track) { return {fileName: track.Key.substring(7, track.Key.length)}; })
+                var decoratedTracks = _.map(tracksWithoutFolderEntry, function (track) {
+                    return {
+                        url: constants.amazonS3UrlBase
+                            .replace('{bucket}', appConfig.amazonS3BucketName)
+                            .replace('{key}', track.Key)
+                    };
+                })
                 
                 cache.put('tracks', decoratedTracks);
                 return $q.resolve(decoratedTracks);

@@ -13,7 +13,7 @@
             };          
 
             fileChooser.onchange = function () {
-                scope[controllerObjectName][objectName][fieldName] = fileChooser.files;    
+                scope[controllerObjectName][objectName][fieldName] = fileChooser.files;
                 scope.$apply();
             };
         };
